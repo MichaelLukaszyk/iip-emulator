@@ -7,7 +7,7 @@ from param_space.run_tardis import run_tardis
 
 log_lsun = 9.5
 lum = utilities.from_loglsun(log_lsun)
-v_start = utilities.guess_v_start(lum)
+v_start = utilities.guess_v_start_from_L(lum)
 
 def range_run(v):
     run_tardis(lum, v_start, v)

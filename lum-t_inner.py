@@ -7,14 +7,14 @@ from param_space.run_tardis import run_tardis
 
 def step_run(log_lsun):
     lum = utilities.from_loglsun(log_lsun)
-    v_start = utilities.guess_v_start(lum)
+    v_start = utilities.guess_v_start_from_L(lum)
 
     # Get min/max t_inner given luminosity
     def range_run(v):
         run_tardis(lum, v_start, v)
     t_inner = functions.find_range(
         range_run,
-        16000 * u.K, # guess_t_inner(lum)
+        16000 * u.K, # guess_t_inner_from_L(lum)
         **config.range_config["t_inner"]
     )
     if t_inner != None:

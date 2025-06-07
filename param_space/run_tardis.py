@@ -8,7 +8,7 @@ os.environ["OMP_NUM_THREADS"] = "4"
 os.environ["MKL_NUM_THREADS"] = "4"
 os.environ["NUMEXPR_NUM_THREADS"] = "4"
 
-def run(lum, v_start, t_inner):
+def run_tardis(lum, v_start, t_inner):
     print("Attempting:", utilities.to_loglsun(lum), v_start, t_inner)
 
     current_dir = os.path.dirname(os.path.abspath(__file__))

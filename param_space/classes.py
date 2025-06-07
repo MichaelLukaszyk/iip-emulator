@@ -3,28 +3,24 @@ import astropy.units as u
 class ParamEntry:
     value: u.Quantity
     crit_type: str
-    pivoted_from: bool
 
-    def __init__(self, value, crit_type = "", pivoted_from = False):
+    def __init__(self, value, crit_type = ""):
         self.value = value
         self.crit_type = crit_type
-        self.pivoted_from = pivoted_from
     def __str__(self):
         return str(self.value)
     
     def to_dict(self):
         return {
             "value": str(self.value),
-            "crit_type": self.crit_type,
-            "pivoted_from": self.pivoted_from
+            "crit_type": self.crit_type
         }
 
     @staticmethod
     def from_dict(data):
         return ParamEntry(
             value = u.Quantity(data["value"]),
-            crit_type = data["crit_type"],
-            pivoted_from = data["pivoted_from"]
+            crit_type = data["crit_type"]
         )
 
 class RunEntry:
