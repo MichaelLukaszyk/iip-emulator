@@ -1,6 +1,6 @@
 import astropy.units as u
 
-output_path = "run_data2.json"
+output_path = "run_data.json"
 use_log_file = False
 
 step_config = {

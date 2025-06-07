@@ -1,5 +1,4 @@
 tardis_config_version: v1.0
-atom_data: AtomData.h5
 
 supernova:
   luminosity_requested: 9.398 log_lsun # 8.398

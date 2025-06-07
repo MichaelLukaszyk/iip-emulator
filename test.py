@@ -2,24 +2,22 @@
 import astropy.units as u
 import json
 
-import ParamSpace.Config as Config
-import ParamSpace.Utilities as Util
-import ParamSpace.RunFuncs as Funcs
-import ParamSpace.Classes as Classes
+from param_space import config, utilities, functions, classes
+from param_space.run_tardis import run_tardis
 
 log_lsun = 9.5
-lum = Util.from_loglsun(log_lsun)
-v_start = Util.guess_v_start(lum)
+lum = utilities.from_loglsun(log_lsun)
+v_start = utilities.guess_v_start(lum)
 
 def range_run(v):
-        Funcs.run(lum, v_start, v)
-t_inner = Funcs.find_range(
+    run_tardis(lum, v_start, v)
+t_inner = functions.find_range(
     range_run,
     16000 * u.K,
-    **Config.range_config["t_inner"]
+    **config.range_config["t_inner"]
 )
 if t_inner != None:
-    min_entry = Classes.RunEntry.new(log_lsun, v_start, t_inner["min"], 2, "min")
-    max_entry = Classes.RunEntry.new(log_lsun, v_start, t_inner["max"], 2, "max")
+    min_entry = classes.RunEntry.new(log_lsun, v_start, t_inner["min"], 2, "min")
+    max_entry = classes.RunEntry.new(log_lsun, v_start, t_inner["max"], 2, "max")
     print("min:", min_entry)
     print("max:", max_entry)
