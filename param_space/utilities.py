@@ -2,6 +2,15 @@ import astropy.constants as c
 import astropy.units as u
 import numpy as np
 
+def convert_quantities(data):
+    if type(data) == dict:
+        for key, value in data.items():
+            if type(value) == u.Quantity:
+                data[key] = str(value)
+            elif type(value) == dict:
+                convert_quantities(value)
+    return data
+
 def from_loglsun(log_lsun):
     return 10**log_lsun * c.L_sun
 

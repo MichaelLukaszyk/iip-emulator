@@ -5,7 +5,6 @@ def no_exception(f, v):
     try:
         f(v)
     except Exception as e:
-        print(e)
         success = False
     return success
 
@@ -94,7 +93,7 @@ def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size
         }
     else:
         return None
-    
+
 def step_through(f, start, step_size, min, max):
     data = {}
 
@@ -120,3 +119,64 @@ def step_through(f, start, step_size, min, max):
         return data
     else:
         return None
+    
+from param_space import utilities, config
+import json
+
+def step_through_space(f, output_path, data, i = 0):
+    #if i == 0:
+    data = data.copy()
+
+    key = list(data.keys())[i]
+    i += 1
+
+    # Non-implemented guess_func and guess_val
+    #
+    # Setup params dictionary {str: u.Quantity}
+    # Normalize data {str:{"value": u.Quantity, ..}, ..}
+    # params = {}
+    # for name, param in data.items():
+    #     if type(param) == dict:
+    #         if "value" not in param and "guess_val" in param:
+    #             guess_val = None
+    #             if param["guess_val"] == "lum":
+    #                 guess_val = utilities.from_loglsun(params["log_lsun"])
+    #             else:
+    #                 guess_val = params["guess_val"]
+    #             params[name] = param["guess_func"](guess_val)
+    #         else:
+    #             params[name] = param["value"]
+    #     else:
+    #         # Given as value
+    #         data[name] = {"value": param}
+    #         params[name] = param
+
+    if i < len(data):
+        # Run this function for each value of the key
+        def step_run(v):
+            data[key] = v
+            return step_through_space(f, output_path, data, i)
+        return step_through(
+            step_run,
+            data[key],
+            **config.step_config[key]
+        )
+    else:
+        # Do range run on final
+        def range_run(v):
+            data[key] = v
+            return f(data)
+        entry = find_range(
+            range_run,
+            data[key],
+            **config.range_config[key]
+        )
+        if entry != None:
+            # Write to file
+            copy = data.copy()
+            copy[key] = entry
+            
+            with open(output_path, "a") as out_file:
+                json.dump(utilities.convert_quantities(copy), out_file)
+                out_file.write("\n")
+        return entry
