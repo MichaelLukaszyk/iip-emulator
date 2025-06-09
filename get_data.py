@@ -6,10 +6,7 @@ data = {
     "log_lsun": 9.398,
     "t_exp": 11 * u.day,
     "t_inner": 16000 * u.K,
-    #"v_start": {
-    #    "guess_func": utilities.guess_v_start_from_L,
-    #    "guess_val": "lum"
-    #},
+    "v_start": utilities.guess_v_start
 }
 
-functions.step_through_space(run_tardis_test, "run_data.log", data)
+functions.step_through_space_extrema(run_tardis_test, "run_data.log", data)

@@ -10,6 +10,11 @@ def no_exception(f, v):
     return success
 
 def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size = None, min = None, max = None):
+    """
+    Finds the minimum and maximum values for which the passed function successfully runs.
+    Returns dictionary {"max": value, "min": value} or None if fails within fail_range of guess.
+    """
+    
     if step_down_size == None:
         step_down_size = step_up_size
     
@@ -98,7 +103,10 @@ def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size
         return None
 
 def step_through(f, start, step_size, min, max):
-    data = {}
+    """
+    Runs the passed function over the defined grid until the function no longer returns a value, then
+    returns a dictionary of format {value:f(value), ..} or None if no values found around start.
+    """
 
     # Copy value if using Quantity objects
     v = None
@@ -107,6 +115,7 @@ def step_through(f, start, step_size, min, max):
     else:
         v = start
 
+    data = {}
     while max == None or v <= max:
         result = f(v)
         if result != None:
@@ -133,41 +142,65 @@ from param_space import utilities, config
 import json
 
 def step_through_space(f, output_path, data, i = 0):
-    #if i == 0:
-    data = data.copy()
+    """
+    Steps through the parameter space of the passed function using the passed data as initial values.
+    The parameter space is defined as where the passed function successfully executes.
+    All successful runs are logged to the output_path, where the data passed to the function is written.
+    """
 
+    data = data.copy()
     key = list(data.keys())[i]
     i += 1
 
-    # Non-implemented guess_func and guess_val
-    #
-    # Setup params dictionary {str: u.Quantity}
-    # Normalize data {str:{"value": u.Quantity, ..}, ..}
-    # params = {}
-    # for name, param in data.items():
-    #     if type(param) == dict:
-    #         if "value" not in param and "guess_val" in param:
-    #             guess_val = None
-    #             if param["guess_val"] == "lum":
-    #                 guess_val = utilities.from_loglsun(params["log_lsun"])
-    #             else:
-    #                 guess_val = params["guess_val"]
-    #             params[name] = param["guess_func"](guess_val)
-    #         else:
-    #             params[name] = param["value"]
-    #     else:
-    #         # Given as value
-    #         data[name] = {"value": param}
-    #         params[name] = param
+    # Run step_run for each value of the key
+    def step_run(v):
+        data[key] = v
+        if i == len(data):
+            success = no_exception(f, data)
+            if success:
+                # Write to file
+                with open(output_path, "a") as out_file:
+                    copy = data.copy()
+                    json.dump(utilities.convert_quantities(copy), out_file)
+                    out_file.write("\n")
+            return success or None
+        else:
+            return step_through_space(f, output_path, data, i)
+    
+    # Check if initial guess function provided
+    start = data[key]
+    if callable(start):
+        start = start(data)
+    return step_through(
+        step_run,
+        start,
+        **config.step_config[key]
+    )
+
+def step_through_space_extrema(f, output_path, data, i = 0):
+    """
+    Similar to step_through_space, except the final data entry is extremized, the min and max values
+    are recorded. This is more computationally efficient if you're only interested in finding the
+    extrema at which the function fails.
+    """
+
+    data = data.copy()
+    key = list(data.keys())[i]
+    i += 1
 
     if i < len(data):
         # Run step_run for each value of the key
         def step_run(v):
             data[key] = v
-            return step_through_space(f, output_path, data, i)
+            return step_through_space_extrema(f, output_path, data, i)
+        
+        # Check if initial guess function provided
+        start = data[key]
+        if callable(start):
+            start = start(data)
         return step_through(
             step_run,
-            data[key],
+            start,
             **config.step_config[key]
         )
     else:
@@ -175,9 +208,14 @@ def step_through_space(f, output_path, data, i = 0):
         def range_run(v):
             data[key] = v
             return f(data)
+        
+        # Check if initial guess function provided
+        start = data[key]
+        if callable(start):
+            start = start(data)
         entry = find_range(
             range_run,
-            data[key],
+            start,
             **config.range_config[key]
         )
         if entry != None:

@@ -17,13 +17,25 @@ def from_loglsun(log_lsun):
 def to_loglsun(lum):
     return np.log10((lum / c.L_sun).to(u.dimensionless_unscaled))
 
-def guess_v_start_from_L(L_1):
+def guess_v_start(params):
+    L_1 = None
+    if "lum" in params and type(params["lum"]) == u.Quantity:
+        L_1 = params["lum"]
+    elif "log_lsun" in params and type(params["log_lsun"]) == float:
+        L_1 = from_loglsun(params["log_lsun"])
+    
     L_0 = from_loglsun(9.398)
     v_0 = 8000 * u.km/u.s
     v_1 = np.sqrt((L_1 / L_0).to(u.dimensionless_unscaled)) * v_0
     return v_1
 
-def guess_t_inner_from_L(L_1):
+def guess_t_inner(params):
+    L_1 = None
+    if "lum" in params and type(params["lum"]) == u.Quantity:
+        L_1 = params["lum"]
+    elif "log_lsun" in params and type(params["log_lsun"]) == float:
+        L_1 = from_loglsun(params["log_lsun"])
+
     L_0 = from_loglsun(9.398)
     T_0 = 18000 * u.K
     T_1 = np.sqrt((L_1 / L_0).to(u.dimensionless_unscaled)) * T_0
