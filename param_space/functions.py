@@ -1,3 +1,4 @@
+import astropy.units as u
 import numpy as np
 
 def no_exception(f, v):
@@ -12,17 +13,19 @@ def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size
     if step_down_size == None:
         step_down_size = step_up_size
     
-    # Remove units
-    units = guess.unit
-    fail_range = fail_range.to(units).value
-    step_up_size = step_up_size.to(units).value
-    step_down_size = step_down_size.to(units).value
-    converge_diff = converge_diff.to(units).value
-    if min != None:
-        min = min.to(units).value
-    if max != None:
-        max = max.to(units).value
-    guess = guess.value
+    # Remove units for Quantity objects
+    units = 1
+    if type(guess) == u.Quantity:
+        units = guess.unit
+        fail_range = fail_range.to(units).value
+        step_up_size = step_up_size.to(units).value
+        step_down_size = step_down_size.to(units).value
+        converge_diff = converge_diff.to(units).value
+        if min != None:
+            min = min.to(units).value
+        if max != None:
+            max = max.to(units).value
+        guess = guess.value
 
     # First find starting value that works
     start = None
@@ -97,8 +100,14 @@ def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size
 def step_through(f, start, step_size, min, max):
     data = {}
 
-    v = start
-    while max == None or v < max:
+    # Copy value if using Quantity objects
+    v = None
+    if type(start) == u.Quantity:
+        v = start.copy()
+    else:
+        v = start
+
+    while max == None or v <= max:
         result = f(v)
         if result != None:
             data[v] = result
@@ -107,7 +116,7 @@ def step_through(f, start, step_size, min, max):
             break
 
     v = start - step_size
-    while min == None or v > min:
+    while min == None or v >= min:
         result = f(v)
         if result != None:
             data[v] = result
@@ -152,7 +161,7 @@ def step_through_space(f, output_path, data, i = 0):
     #         params[name] = param
 
     if i < len(data):
-        # Run this function for each value of the key
+        # Run step_run for each value of the key
         def step_run(v):
             data[key] = v
             return step_through_space(f, output_path, data, i)
