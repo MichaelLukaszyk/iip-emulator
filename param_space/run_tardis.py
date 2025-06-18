@@ -29,7 +29,6 @@ def run_tardis(params):
     make_csvy(
         v_start,
         v_stop = v_start * 3,
-        t_exp = config.supernova.time_explosion,
         shells = 20
     )
 
@@ -51,13 +50,14 @@ def run_tardis(params):
     output_dir = os.path.join(current_dir, "output")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    output_path = os.path.join(output_dir, id + ".csv")
+    output_path = os.path.join(output_dir, str(id) + ".csv")
 
     with open(output_path, "w") as file:
         file.write("wavelength,L_density")
-        for i, v in wavelength.enumerate():
-            file.write(str(v) + "," + str(L_density[i]))
-
+        for i in range(len(wavelength)):
+            w = wavelength[i]
+            L = L_density[i]
+            file.write(str(w) + "," + str(L))
 
 import astropy.units as u
 

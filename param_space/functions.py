@@ -1,5 +1,16 @@
 import astropy.units as u
 import numpy as np
+import os
+
+def write_data(output_name, data):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(current_dir, "output")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_path = os.path.join(output_dir, output_name)
+    with open(output_path, "a") as out_file:
+        json.dump(utilities.convert_quantities(data), out_file)
+        out_file.write("\n")
 
 def no_exception(f, v):
     success = True
@@ -141,11 +152,11 @@ def step_through(f, start, step_size, min, max):
 from param_space import utilities, config
 import json
 
-def step_through_space(f, output_path, data, i = 0):
+def step_through_space(f, output_name, data, i = 0):
     """
     Steps through the parameter space of the passed function using the passed data as initial values.
     The parameter space is defined as where the passed function successfully executes.
-    All successful runs are logged to the output_path, where the data passed to the function is written.
+    All successful runs are logged under output/output_name, where the data passed to the function is written.
     """
 
     data = data.copy()
@@ -158,14 +169,11 @@ def step_through_space(f, output_path, data, i = 0):
         if i == len(data):
             success = no_exception(f, data)
             if success:
-                # Write to file
-                with open(output_path, "a") as out_file:
-                    copy = data.copy()
-                    json.dump(utilities.convert_quantities(copy), out_file)
-                    out_file.write("\n")
+                copy = data.copy()
+                write_data(output_name, copy)
             return success or None
         else:
-            return step_through_space(f, output_path, data, i)
+            return step_through_space(f, output_name, data, i)
     
     # Check if initial guess function provided
     start = data[key]
@@ -177,7 +185,7 @@ def step_through_space(f, output_path, data, i = 0):
         **config.step_config[key]
     )
 
-def step_through_space_extrema(f, output_path, data, i = 0):
+def step_through_space_extrema(f, output_name, data, i = 0):
     """
     Similar to step_through_space, except the final data entry is extremized, the min and max values
     are recorded. This is more computationally efficient if you're only interested in finding the
@@ -192,7 +200,7 @@ def step_through_space_extrema(f, output_path, data, i = 0):
         # Run step_run for each value of the key
         def step_run(v):
             data[key] = v
-            return step_through_space_extrema(f, output_path, data, i)
+            return step_through_space_extrema(f, output_name, data, i)
         
         # Check if initial guess function provided
         start = data[key]
@@ -222,8 +230,5 @@ def step_through_space_extrema(f, output_path, data, i = 0):
             # Write to file
             copy = data.copy()
             copy[key] = entry
-            
-            with open(output_path, "a") as out_file:
-                json.dump(utilities.convert_quantities(copy), out_file)
-                out_file.write("\n")
+            write_data(output_name, copy)
         return entry
