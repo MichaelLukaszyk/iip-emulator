@@ -1,51 +1,30 @@
 tardis_config_version: v1.0
+atom_data: "atom_data.h5"
+csvy_model: "model.csvy"
 
 supernova:
-  luminosity_requested: 9.398 log_lsun # 8.398
-  time_explosion: 11 day # 9th of November 1999
-
-model:
-  structure:
-    type: specific
-    velocity:
-      start: 7092 km/s
-      stop: 18000 km/s
-      num: 10 # 20
-    density:
-      type: power_law
-      time_0: 16.0 day
-      rho_0: 1.948e-14 g/cm^3
-      v_0: 8000 km/s
-      exponent: -10
-
-  abundances:
-    type: uniform
-    H: 0.7
-    He: 0.28
-    C: 1.44e-4
-    N: 6.7e-3
-    O: 1.13e-4
-    Ni56: 1.3043e-2
+  luminosity_requested: 9.398 log_lsun
+  time_explosion: 11 day
 
 plasma:
   ionization: nebular
   excitation: dilute-lte
   radiative_rates_type: detailed
   line_interaction_type: macroatom
-  initial_t_inner: 16000 K #16000
+  initial_t_inner: 16000 K
 
-  nlte_ionization_species: [H I, H II, He I, He II] # remove He II
+  nlte_ionization_species: [H I, H II, He I, He II]
   continuum_interaction:
     species: [H I, H II, He I, He II]
     enable_adiabatic_cooling: True
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 1.0e+2 #4.0e+4
-  iterations: 5 # 10
+  no_of_packets: 4.0e+4
+  iterations: 10
 
-  last_no_of_packets: 1.0e+2 #1.0e+4
-  no_of_virtual_packets: 0 # 3
+  last_no_of_packets: 1.0e+5
+  no_of_virtual_packets: 10
   nthreads: 4
 
   convergence_strategy:
