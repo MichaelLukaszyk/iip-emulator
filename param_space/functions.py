@@ -149,10 +149,10 @@ def step_through(f, start, step_size, min, max):
     else:
         return None
     
-from param_space import utilities, config
+from param_space import utilities
 import json
 
-def step_through_space(f, output_name, data, i = 0):
+def step_through_space(f, output_name, data, step_config, i=0):
     """
     Steps through the parameter space of the passed function using the passed data as initial values.
     The parameter space is defined as where the passed function successfully executes.
@@ -173,7 +173,7 @@ def step_through_space(f, output_name, data, i = 0):
                 write_data(output_name, copy)
             return success or None
         else:
-            return step_through_space(f, output_name, data, i)
+            return step_through_space(f, output_name, data, step_config, i)
     
     # Check if initial guess function provided
     start = data[key]
@@ -182,10 +182,10 @@ def step_through_space(f, output_name, data, i = 0):
     return step_through(
         step_run,
         start,
-        **config.step_config[key]
+        **step_config[key]
     )
 
-def step_through_space_extrema(f, output_name, data, i = 0):
+def step_through_space_extrema(f, output_name, data, step_config, range_config, i=0):
     """
     Similar to step_through_space, except the final data entry is extremized, the min and max values
     are recorded. This is more computationally efficient if you're only interested in finding the
@@ -200,7 +200,7 @@ def step_through_space_extrema(f, output_name, data, i = 0):
         # Run step_run for each value of the key
         def step_run(v):
             data[key] = v
-            return step_through_space_extrema(f, output_name, data, i)
+            return step_through_space_extrema(f, output_name, data, step_config, range_config, i)
         
         # Check if initial guess function provided
         start = data[key]
@@ -209,7 +209,7 @@ def step_through_space_extrema(f, output_name, data, i = 0):
         return step_through(
             step_run,
             start,
-            **config.step_config[key]
+            **step_config[key]
         )
     else:
         # Do range run on final
@@ -224,7 +224,7 @@ def step_through_space_extrema(f, output_name, data, i = 0):
         entry = find_range(
             range_run,
             start,
-            **config.range_config[key]
+            **range_config[key]
         )
         if entry != None:
             # Write to file
