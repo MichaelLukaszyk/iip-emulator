@@ -21,5 +21,8 @@ params = {
 set_output_dir('/u/ml168/scratch/grid_output')
 
 # Write data if successful
-run_tardis(params, output_name='test')
-write_data(params, output_name='test')
+try:
+    run_tardis(params, output_name='test')
+    write_data(params, output_name='test')
+except:
+    pass
