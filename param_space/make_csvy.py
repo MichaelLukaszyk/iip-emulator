@@ -7,7 +7,7 @@ import os
 metadata = {
     "tardis_model_config_version": "v1.0",
     "model_density_time_0": "16.0 day",
-    "model_isotope_time_0": "2.0 day",
+    "model_isotope_time_0": "100 sec",
     "name": "model.csvy",
 
     "datatype": {
@@ -37,7 +37,7 @@ abundances = {
     "C": 1.44e-4,
     "N": 6.7e-3,
     "O": 1.13e-4,
-    "Ni56": 1.3043e-2 
+    "Ni56": 1.3043e-2 # Sollerman uses 0.005
 }
 
 for key in abundances.keys():
@@ -63,7 +63,8 @@ def make_csvy(v_start, v_stop, shells):
         rho_0 = u.Quantity(density["rho_0"])
         v_0 = u.Quantity(density["v_0"])
 
-        velocities = np.logspace(np.log10(start), np.log10(stop), num = shells + 1) * units
+        log_start = 2.5
+        velocities = (np.logspace(log_start, np.log10(stop-start+10**log_start), num=shells+1) + start - 10**log_start)*units
         densities = rho_0 * (velocities / v_0)**density["exponent"]
         shells = [[velocities[i].value, densities[i].to(u.g / u.cm**3).value] + list(abundances.values()) for i in range(1 + shells)]
 

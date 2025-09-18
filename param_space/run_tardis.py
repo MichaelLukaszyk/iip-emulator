@@ -10,7 +10,7 @@ os.environ["OMP_NUM_THREADS"] = "4"
 os.environ["MKL_NUM_THREADS"] = "4"
 os.environ["NUMEXPR_NUM_THREADS"] = "4"
 
-def run_tardis(params):
+def run_tardis(params, id=None):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     atomic = AtomData.from_hdf(os.path.join(current_dir, "tardis_data/atom_data.h5"))
     config = Configuration.from_yaml(os.path.join(current_dir, "tardis_data/base_config.yml"))
@@ -41,7 +41,8 @@ def run_tardis(params):
     sim.run_final()
 
     # Log successful run
-    id = uuid.uuid4()
+    if id == None:
+        id = uuid.uuid4()
     params["id"] = id
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda

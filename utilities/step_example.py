@@ -5,8 +5,8 @@ import astropy.units as u
 start_data = {
     "log_lsun": 9.398,
     "t_exp": 13 * u.day,
-    "v_start": 7300 * u.km/u.s,
-    "t_inner": 16000 * u.K,
+    "v_start": 6200 * u.km/u.s,
+    "t_inner": 13800 * u.K,
 }
 
 step_config = {
