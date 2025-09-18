@@ -25,7 +25,7 @@ montecarlo:
 
   last_no_of_packets: 1.0e+5
   no_of_virtual_packets: 10
-  nthreads: 4
+  nthreads: 1
 
   convergence_strategy:
     type: damped
