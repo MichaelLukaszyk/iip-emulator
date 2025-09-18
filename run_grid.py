@@ -18,7 +18,7 @@ params = {
     "v_start": row.v_start * u.km/u.s
 }
 
-#set_output_dir('/u/ml168/scratch/grid_output')
+set_output_dir('/u/ml168/scratch/grid_output')
 
 # Write data if successful
 run_tardis(params, output_name='test')
