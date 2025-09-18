@@ -30,9 +30,9 @@ montecarlo:
   convergence_strategy:
     type: damped
     stop_if_converged: True
-    fraction: 0.5
+    fraction: 0.9
     hold_iterations: 3
-    damping_constant: 1.0
+    damping_constant: 0.5
     threshold: 0.05
     t_inner:
       damping_constant: 0.0 # 0.5
