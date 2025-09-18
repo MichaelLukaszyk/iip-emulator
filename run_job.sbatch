@@ -14,5 +14,6 @@
 #SBATCH --time=01:00:00
 
 module load anaconda3
+conda init
 conda activate tardis
 python run_grid.py $SLURM_ARRAY_TASK_ID
