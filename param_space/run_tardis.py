@@ -31,7 +31,7 @@ def run_tardis(params, output_name):
     make_csvy(
         v_start,
         v_stop = v_start * 3,
-        shells = 20
+        shells = 10
     )
 
     sim = Simulation.from_config(
