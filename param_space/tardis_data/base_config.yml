@@ -35,7 +35,7 @@ montecarlo:
     damping_constant: 1.0
     threshold: 0.05
     t_inner:
-      damping_constant: 0.5
+      damping_constant: 0.0 # 0.5
 
 spectrum:
   start: 1000 angstrom

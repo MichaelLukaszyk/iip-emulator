@@ -2,7 +2,9 @@ from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
 from tardis.io.atom_data.base import AtomData
 from param_space.make_csvy import make_csvy
+from param_space.functions import write_df
 from param_space import utilities
+import pandas as pd
 import uuid
 import os
 
@@ -10,7 +12,7 @@ os.environ["OMP_NUM_THREADS"] = "4"
 os.environ["MKL_NUM_THREADS"] = "4"
 os.environ["NUMEXPR_NUM_THREADS"] = "4"
 
-def run_tardis(params, id=None):
+def run_tardis(params, output_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     atomic = AtomData.from_hdf(os.path.join(current_dir, "tardis_data/atom_data.h5"))
     config = Configuration.from_yaml(os.path.join(current_dir, "tardis_data/base_config.yml"))
@@ -40,25 +42,12 @@ def run_tardis(params, id=None):
     sim.run_convergence()
     sim.run_final()
 
-    # Log successful run
-    if id == None:
-        id = uuid.uuid4()
-    params["id"] = id
+    # Run was successful: assign ID, log SED data
+    params['id'] = uuid.uuid4()
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
-    
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(current_dir, "output")
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    output_path = os.path.join(output_dir, str(id) + ".csv")
-
-    with open(output_path, "w") as file:
-        file.write("wavelength,L_density")
-        for i in range(len(wavelength)):
-            w = wavelength[i]
-            L = L_density[i]
-            file.write(str(w) + "," + str(L))
+    df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
+    write_df(df, output_name + str(params['id']) + '_sed')
 
 import astropy.units as u
 

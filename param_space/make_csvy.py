@@ -7,7 +7,7 @@ import os
 metadata = {
     "tardis_model_config_version": "v1.0",
     "model_density_time_0": "16.0 day",
-    "model_isotope_time_0": "100 sec",
+    "model_isotope_time_0": "100 s",
     "name": "model.csvy",
 
     "datatype": {

@@ -2,16 +2,29 @@ import astropy.units as u
 import numpy as np
 import os
 
-def write_data(output_name, data):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(current_dir, "output")
+# Output functions
+output_dir = None
+
+def set_output_dir(new_output_dir):
+    global output_dir
+    output_dir = new_output_dir
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    output_path = os.path.join(output_dir, output_name)
-    with open(output_path, "a") as out_file:
-        json.dump(utilities.convert_quantities(data), out_file)
-        out_file.write("\n")
 
+def write_data(data, output_name):
+    output_path = os.path.join(output_dir, output_name + '.log')
+    with open(output_path, 'a') as out_file:
+        json.dump(utilities.convert_quantities(data), out_file)
+        out_file.write('\n')
+
+def write_df(df, output_name):
+    output_path = os.path.join(output_dir, output_name + '.csv')
+    df.to_csv(output_path)
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+set_output_dir(os.path.join(current_dir, 'output'))
+
+# Step & range functions
 def no_exception(f, v):
     success = True
     try:
@@ -20,10 +33,10 @@ def no_exception(f, v):
         success = False
     return success
 
-def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size = None, min = None, max = None):
+def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size=None, min=None, max=None):
     """
     Finds the minimum and maximum values for which the passed function successfully runs.
-    Returns dictionary {"max": value, "min": value} or None if fails within fail_range of guess.
+    Returns dictionary {'max': value, 'min': value} or None if fails within fail_range of guess.
     """
     
     if step_down_size == None:
@@ -107,8 +120,8 @@ def find_range(f, guess, fail_range, converge_diff, step_up_size, step_down_size
                     value = (upper + lower) / 2
                 
         return {
-            "max": MAX * units,
-            "min": MIN * units
+            'max': MAX * units,
+            'min': MIN * units
         }
     else:
         return None
@@ -156,7 +169,7 @@ def step_through_space(f, output_name, data, step_config, i=0):
     """
     Steps through the parameter space of the passed function using the passed data as initial values.
     The parameter space is defined as where the passed function successfully executes.
-    All successful runs are logged under output/output_name, where the data passed to the function is written.
+    All successful runs are logged under output_dir/output_name, where the data passed to the function is written.
     """
 
     data = data.copy()
@@ -170,7 +183,7 @@ def step_through_space(f, output_name, data, step_config, i=0):
             success = no_exception(f, data)
             if success:
                 copy = data.copy()
-                write_data(output_name, copy)
+                write_data(copy, output_name + str(i))
             return success or None
         else:
             return step_through_space(f, output_name, data, step_config, i)
@@ -230,5 +243,5 @@ def step_through_space_extrema(f, output_name, data, step_config, range_config, 
             # Write to file
             copy = data.copy()
             copy[key] = entry
-            write_data(output_name, copy)
+            write_data(copy, output_name + str(i))
         return entry
