@@ -2,6 +2,7 @@
 output/
 .vscode/
 saved_outputs/
+model.csvy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

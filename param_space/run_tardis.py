@@ -11,6 +11,7 @@ import os
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
+run_indices = {}
 
 def run_tardis(params, output_name):
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,11 +44,16 @@ def run_tardis(params, output_name):
     sim.run_final()
 
     # Run was successful: assign ID, log SED data
-    params['id'] = uuid.uuid4()
+    global run_indices
+    if not output_name in run_indices:
+        run_indices[output_name] = 1
+    index = run_indices[output_name]
+    run_indices[output_name] += 1
+    params['id'] = output_name + '_' + str(index)
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    write_df(df, output_name + str(params['id']) + '_sed')
+    write_df(df, output_name + id + '_sed')
 
 import astropy.units as u
 
