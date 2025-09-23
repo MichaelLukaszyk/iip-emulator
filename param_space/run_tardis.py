@@ -5,7 +5,6 @@ from param_space.make_csvy import make_csvy
 from param_space.functions import write_df
 from param_space import utilities
 import pandas as pd
-import uuid
 import os
 
 os.environ["OMP_NUM_THREADS"] = "1"
@@ -49,11 +48,12 @@ def run_tardis(params, output_name):
         run_indices[output_name] = 1
     index = run_indices[output_name]
     run_indices[output_name] += 1
-    params['id'] = output_name + '_' + str(index)
+    id = output_name + '_' + str(index)
+    params['id'] = id
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    write_df(df, output_name + id + '_sed')
+    write_df(df, id + '_sed')
 
 import astropy.units as u
 
