@@ -13,10 +13,17 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 run_indices = {}
 
 def run_tardis(params, output_name):
+    # Setup CSVY, then load data
+    make_csvy(
+        params["v_start"],
+        v_stop = params["v_start"] * 3,
+        shells = 10
+    )
     current_dir = os.path.dirname(os.path.abspath(__file__))
     atomic = AtomData.from_hdf(os.path.join(current_dir, "tardis_data/atom_data.h5"))
     config = Configuration.from_yaml(os.path.join(current_dir, "tardis_data/base_config.yml"))
 
+    # Update configuration with params
     for name, value in params.items():
         if name == "lum":
             config.supernova.luminosity_requested = value
@@ -26,14 +33,8 @@ def run_tardis(params, output_name):
             config.supernova.time_explosion = value
         elif name == "t_inner":
             config.plasma.initial_t_inner = value
-    
-    v_start = params["v_start"]
-    make_csvy(
-        v_start,
-        v_stop = v_start * 3,
-        shells = 10
-    )
 
+    # Run simulation
     sim = Simulation.from_config(
         config,
         atom_data = atomic,
