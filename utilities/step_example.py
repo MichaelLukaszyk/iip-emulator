@@ -1,5 +1,5 @@
 from param_space.functions import step_through_space, step_through_space_extrema, set_output_dir
-from param_space.run_tardis import run_tardis_test
+from param_space.run_tardis import run_tardis
 import astropy.units as u
 
 start_data = {
@@ -44,4 +44,4 @@ range_config = {
 }
 
 set_output_dir('/u/ml168/scratch/grid_output')
-step_through_space_extrema(run_tardis_test, '2020jfo', start_data, step_config, range_config)
+step_through_space_extrema(run_tardis, '2020jfo', start_data, step_config, range_config)

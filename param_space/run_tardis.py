@@ -55,24 +55,3 @@ def run_tardis(params, output_name):
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
     write_df(df, id + '_sed')
-
-import astropy.units as u
-
-def run_tardis_test(params):
-    for name, value in params.items():
-        if name == "lum":
-            v = utilities.to_loglsun(value)
-            if v > 10.21 or v < 8.745:
-                raise ValueError
-        elif name == "log_lsun":
-            if value > 10.21 or value < 8.745:
-                raise ValueError
-        elif name == "t_exp":
-            if value > 21 * u.day or value < 4 * u.day:
-                raise ValueError
-        elif name == "v_start":
-            if value > 22500 * u.km/u.s or value < 4000 * u.km/u.s:
-                raise ValueError
-        elif name == "t_inner":
-            if value > 35000 * u.K or value < 12000 * u.K:
-                raise ValueError
