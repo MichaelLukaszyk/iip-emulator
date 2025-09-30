@@ -13,7 +13,7 @@ plasma:
   line_interaction_type: macroatom
   initial_t_inner: 16000 K
 
-  nlte_ionization_species: [H I, H II, He I, He II]
+  # nlte_ionization_species: [H I, H II, He I, He II]
   continuum_interaction:
     species: [H I, H II, He I, He II]
     enable_adiabatic_cooling: True
