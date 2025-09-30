@@ -5,10 +5,15 @@ import pandas as pd
 import sys
 import os
 
+output_name = '2020jfo'
+grid_name = 'grid.csv'
+
+# Read grid
 current_dir = os.path.dirname(os.path.abspath(__file__))
-grid_dir = os.path.join(current_dir, 'grid.csv')
+grid_dir = os.path.join(current_dir, grid_name)
 df = pd.read_csv(grid_dir)
 
+# Find specified grid entry
 index = int(sys.argv[1])
 row = df.iloc[index]
 params = {
@@ -23,7 +28,7 @@ set_output_dir('/u/ml168/scratch/grid_output')
 # Write data if successful
 try:
     print('\n' + 'STARTING RUN #' + str(index) + '\n')
-    run_tardis(params, output_name='test')
-    write_data(params, output_name='test')
+    run_tardis(params, output_name)
+    write_data(params, output_name)
 except Exception as e:
     print('Error:', e)
