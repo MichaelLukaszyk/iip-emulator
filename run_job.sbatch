@@ -7,10 +7,10 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --partition=caps
 #SBATCH --account=caps
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 #SBATCH --mem=80G
-#SBATCH --time=01:00:00
+#SBATCH --time=24:00:00
 
 python run_grid.py $SLURM_ARRAY_TASK_ID

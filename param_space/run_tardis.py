@@ -10,9 +10,8 @@ import os
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
-run_indices = {}
 
-def run_tardis(params, output_name):
+def run_tardis(params, output_name, run_index=0):
     # Setup CSVY, then load data
     make_csvy(
         params["v_start"],
@@ -44,12 +43,7 @@ def run_tardis(params, output_name):
     sim.run_final()
 
     # Run was successful: assign ID, log SED data
-    global run_indices
-    if not output_name in run_indices:
-        run_indices[output_name] = 1
-    index = run_indices[output_name]
-    run_indices[output_name] += 1
-    id = output_name + '_' + str(index)
+    id = output_name + '_' + str(run_index)
     params['id'] = id
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda

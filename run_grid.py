@@ -28,7 +28,7 @@ set_output_dir('/u/ml168/scratch/grid_output')
 # Write data if successful
 try:
     print('\n' + 'STARTING RUN #' + str(index) + '\n')
-    run_tardis(params, output_name)
+    run_tardis(params, output_name, index)
     write_data(params, output_name)
 except Exception as e:
     print('Error:', e)
