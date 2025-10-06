@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=grid_run
-#SBATCH --array=0-499%20
+#SBATCH --array=0-4999%100
 #SBATCH --output=/u/ml168/scratch/grid_run_%A.out
 #SBATCH --error=/u/ml168/scratch/grid_run_%A.err
 #SBATCH --mail-user=ml168@illinois.edu
