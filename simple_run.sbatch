@@ -15,4 +15,4 @@
 
 #SBATCH --array=0-999%100
 
-python run_grid.py $i
+python run_grid.py $SLURM_ARRAY_TASK_ID
