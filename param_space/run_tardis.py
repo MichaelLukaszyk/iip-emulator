@@ -14,7 +14,9 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 def run_tardis(params, run_index=0):
     # Setup CSVY, then load data
-    v_start = params['v_start'] or (6200 * u.km/u.s)
+    v_start = 6200 * u.km/u.s
+    if 'v_start' in params:
+        v_start = params['v_start']
     make_csvy(
         v_start,
         v_stop = v_start * 3,
