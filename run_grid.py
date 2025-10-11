@@ -25,7 +25,7 @@ row = df.iloc[index]
 
 # Add on units
 for name, value in row.items():
-    if units[name]:
+    if name in units:
         row[name] = value * units[name]
 
 # Convert to correct format
