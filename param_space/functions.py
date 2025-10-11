@@ -4,6 +4,7 @@ import os
 
 # Output functions
 output_dir = None
+folder_dir = None
 
 def set_output_dir(new_output_dir):
     global output_dir
@@ -11,18 +12,21 @@ def set_output_dir(new_output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-def write_data(data, output_name):
-    output_path = os.path.join(output_dir, output_name + '.log')
-    with open(output_path, 'a') as out_file:
-        json.dump(utilities.convert_quantities(data), out_file)
-        out_file.write('\n')
+def set_folder_name(output_name):
+    global folder_dir
+    folder_dir = os.path.join(output_dir, output_name)
+    if not os.path.exists(folder_dir):
+        os.makedirs(folder_dir)
 
-def write_df(df, output_name):
-    output_path = os.path.join(output_dir, output_name + '.csv')
-    df.to_csv(output_path)
+def write_data(data):
+    file_path = os.path.join(folder_dir, 'parameters.log')
+    with open(file_path, 'a') as file:
+        json.dump(utilities.convert_quantities(data), file)
+        file.write('\n')
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-set_output_dir(os.path.join(current_dir, 'output'))
+def write_df(df, name):
+    file_path = os.path.join(folder_dir, name + '.csv')
+    df.to_csv(file_path)
 
 # Step & range functions
 def no_exception(f, v):
@@ -165,11 +169,11 @@ def step_through(f, start, step_size, min, max):
 from param_space import utilities
 import json
 
-def step_through_space(f, output_name, data, step_config, i=0):
+def step_through_space(f, data, step_config, i=0):
     """
     Steps through the parameter space of the passed function using the passed data as initial values.
     The parameter space is defined as where the passed function successfully executes.
-    All successful runs are logged under output_dir/output_name, where the data passed to the function is written.
+    All successful runs are logged.
     """
 
     data = data.copy()
@@ -183,10 +187,10 @@ def step_through_space(f, output_name, data, step_config, i=0):
             success = no_exception(f, data)
             if success:
                 copy = data.copy()
-                write_data(copy, output_name + str(i))
+                write_data(copy)
             return success or None
         else:
-            return step_through_space(f, output_name, data, step_config, i)
+            return step_through_space(f, data, step_config, i)
     
     # Check if initial guess function provided
     start = data[key]
@@ -198,7 +202,7 @@ def step_through_space(f, output_name, data, step_config, i=0):
         **step_config[key]
     )
 
-def step_through_space_extrema(f, output_name, data, step_config, range_config, i=0):
+def step_through_space_extrema(f, data, step_config, range_config, i=0):
     """
     Similar to step_through_space, except the final data entry is extremized, the min and max values
     are recorded. This is more computationally efficient if you're only interested in finding the
@@ -213,7 +217,7 @@ def step_through_space_extrema(f, output_name, data, step_config, range_config, 
         # Run step_run for each value of the key
         def step_run(v):
             data[key] = v
-            return step_through_space_extrema(f, output_name, data, step_config, range_config, i)
+            return step_through_space_extrema(f, data, step_config, range_config, i)
         
         # Check if initial guess function provided
         start = data[key]
@@ -243,5 +247,5 @@ def step_through_space_extrema(f, output_name, data, step_config, range_config, 
             # Write to file
             copy = data.copy()
             copy[key] = entry
-            write_data(copy, output_name + str(i))
+            write_data(copy)
         return entry

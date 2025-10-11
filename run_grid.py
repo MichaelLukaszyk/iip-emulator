@@ -1,11 +1,12 @@
 from param_space.run_tardis import run_tardis
-from param_space.functions import write_data, set_output_dir
+from param_space.functions import write_data, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
 import sys
 import os
 
-output_name = 'noise_variation'
+set_output_dir('/u/ml168/scratch')
+set_folder_name('noise_variation')
 grid_name = 'grid.csv'
 units = {
     't_exp': u.day,
@@ -31,10 +32,9 @@ for name, value in row.items():
 params = row.to_dict()
 
 # Write data if successful
-set_output_dir('/u/ml168/scratch/grid_output')
 try:
     print('\n' + 'STARTING RUN #' + str(index) + '\n')
     run_tardis(params, index)
-    write_data(params, output_name)
+    write_data(params)
 except Exception as e:
     print('Error:', e)

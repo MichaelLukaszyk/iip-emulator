@@ -1,4 +1,4 @@
-from param_space.functions import step_through_space, step_through_space_extrema, set_output_dir
+from param_space.functions import step_through_space, step_through_space_extrema, set_output_dir, set_folder_name
 from param_space.run_tardis import run_tardis
 import astropy.units as u
 
@@ -43,5 +43,6 @@ range_config = {
     },
 }
 
-set_output_dir('/u/ml168/scratch/grid_output')
-step_through_space_extrema(run_tardis, '2020jfo', start_data, step_config, range_config)
+set_output_dir('/u/ml168/scratch')
+set_folder_name('2020jfo')
+step_through_space_extrema(run_tardis, start_data, step_config, range_config)
