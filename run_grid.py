@@ -16,16 +16,22 @@ df = pd.read_csv(grid_dir)
 # Find specified grid entry
 index = int(sys.argv[1])
 row = df.iloc[index]
-params = {
-    "log_lsun": row.log_lsun,
-    "t_exp": row.t_exp * u.day,
-    "t_inner": row.t_inner * u.K,
-    "v_start": row.v_start * u.km/u.s
-}
 
-set_output_dir('/u/ml168/scratch/grid_output')
+# Add on units
+units = {
+    't_exp': u.day,
+    't_inner': u.K,
+    'v_start': u.km/u.s
+}
+for name, value in row.items():
+    if units[name]:
+        row[name] = value * units[name]
+
+# Convert to correct format
+params = row.to_dict()
 
 # Write data if successful
+set_output_dir('/u/ml168/scratch/grid_output')
 try:
     print('\n' + 'STARTING RUN #' + str(index) + '\n')
     run_tardis(params, output_name, index)
