@@ -12,7 +12,7 @@ os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
-def run_tardis(params, output_name, run_index=0):
+def run_tardis(params, run_index=0):
     # Setup CSVY, then load data
     v_start = params['v_start'] or (6200 * u.km/u.s)
     make_csvy(

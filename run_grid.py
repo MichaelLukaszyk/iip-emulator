@@ -5,8 +5,13 @@ import pandas as pd
 import sys
 import os
 
-output_name = '2020jfo'
+output_name = 'noise_variation'
 grid_name = 'grid.csv'
+units = {
+    't_exp': u.day,
+    't_inner': u.K,
+    'v_start': u.km/u.s
+}
 
 # Read grid
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,11 +23,6 @@ index = int(sys.argv[1])
 row = df.iloc[index]
 
 # Add on units
-units = {
-    't_exp': u.day,
-    't_inner': u.K,
-    'v_start': u.km/u.s
-}
 for name, value in row.items():
     if units[name]:
         row[name] = value * units[name]
@@ -34,7 +34,7 @@ params = row.to_dict()
 set_output_dir('/u/ml168/scratch/grid_output')
 try:
     print('\n' + 'STARTING RUN #' + str(index) + '\n')
-    run_tardis(params, output_name, index)
+    run_tardis(params, index)
     write_data(params, output_name)
 except Exception as e:
     print('Error:', e)
