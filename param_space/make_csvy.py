@@ -46,10 +46,10 @@ for key in abundances.keys():
     })
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-csvy_path = os.path.join(current_dir, "tardis_data/model.csvy")
+default_path = os.path.join(current_dir, "tardis_data/model.csvy")
 fields = ["velocity", "density"] + list(abundances.keys())
 
-def make_csvy(v_start, v_stop, shells):
+def make_csvy(v_start, v_stop, shells, csvy_path=default_path):
     units = v_start.unit
     start = v_start.value
     stop = v_stop.to(units).value
