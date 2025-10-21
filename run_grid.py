@@ -33,12 +33,12 @@ index = int(sys.argv[1])
 row = df.iloc[index]
 
 # Add on units
+params = {}
 for name, value in row.items():
     if name in units:
-        row[name] = value * units[name]
-
-# Convert to correct format
-params = row.to_dict()
+        params[name] = value * units[name]
+    else:
+        params[name] = value
 
 # Write data if successful
 try:
