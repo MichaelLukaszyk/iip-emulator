@@ -3,15 +3,15 @@ atom_data: "atom_data.h5"
 csvy_model: "model.csvy"
 
 supernova:
-  luminosity_requested: 9.398 log_lsun
-  time_explosion: 11 day
+  luminosity_requested: 8.72 log_lsun
+  time_explosion: 13.356523 day
 
 plasma:
   ionization: nebular
   excitation: dilute-lte
   radiative_rates_type: detailed
   line_interaction_type: macroatom
-  initial_t_inner: 16000 K
+  # initial_t_inner: 16000 K
 
   #nlte_ionization_species: [H I, H II, He I, He II]
   #continuum_interaction:
@@ -20,12 +20,12 @@ plasma:
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 1.0e+5
-  iterations: 10
+  no_of_packets: 4.0e+4
+  iterations: 50
 
   last_no_of_packets: 1.0e+5
-  no_of_virtual_packets: 8
-  nthreads: 1
+  no_of_virtual_packets: 3 # 10
+  nthreads: 4
 
   convergence_strategy:
     type: damped

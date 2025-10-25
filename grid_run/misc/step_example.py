@@ -1,5 +1,5 @@
-from param_space.functions import step_through_space, step_through_space_extrema, set_output_dir, set_folder_name
-from param_space.run_tardis import run_tardis
+from grid_run.functions import step_through_space, step_through_space_extrema, set_output_dir, set_folder_name
+from grid_run.run_tardis import run_tardis
 import astropy.units as u
 
 start_data = {

@@ -1,16 +1,18 @@
-from param_space.run_tardis import run_tardis
-from param_space.functions import write_data, set_output_dir, set_folder_name
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from grid_run.run_tardis import run_tardis
+from grid_run.functions import write_data, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
-import sys
-import os
 
 # Before running:
-# 1. Ensure base_config in param_space.tardis_data is correct
+# 1. Ensure base_config in grid_run.tardis_data is correct
 # 2. Make changes to make_csvy if shell structure / abdunances changes are needed
 # 3. Create grid.csv file in the iip-emulator directory
 # 4. Ensure settings below are correct
 # 5. Update sbatch script to match grid length
+# 6. Run sbatch script with tardis conda environment active
 
 # Settings
 set_output_dir('/u/ml168/scratch')

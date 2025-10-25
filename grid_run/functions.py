@@ -1,5 +1,6 @@
 import astropy.units as u
 import numpy as np
+import json
 import os
 
 # Output functions
@@ -18,10 +19,19 @@ def set_folder_name(output_name):
     if not os.path.exists(folder_dir):
         os.makedirs(folder_dir)
 
+def convert_quantities(data):
+    if type(data) == dict:
+        for key, value in data.items():
+            if type(value) == u.Quantity:
+                data[key] = str(value)
+            elif type(value) == dict:
+                convert_quantities(value)
+    return data
+
 def write_data(data):
     file_path = os.path.join(folder_dir, 'parameters.log')
     with open(file_path, 'a') as file:
-        json.dump(utilities.convert_quantities(data), file)
+        json.dump(convert_quantities(data), file)
         file.write('\n')
 
 def write_df(df, name):
@@ -165,9 +175,6 @@ def step_through(f, start, step_size, min, max):
         return data
     else:
         return None
-    
-from param_space import utilities
-import json
 
 def step_through_space(f, data, step_config, i=0):
     """

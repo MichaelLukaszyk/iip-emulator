@@ -11,8 +11,13 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=4G
-#SBATCH --time=5:00:00
+#SBATCH --time=3:00:00
 
 #SBATCH --array=0-999%100
 
-python run_grid.py $SLURM_ARRAY_TASK_ID
+START=$(( SLURM_ARRAY_TASK_ID * 5 ))
+END=$(( START + 4 ))
+
+for (( i=$START; i<=$END; i++ )); do
+    python run.py $i
+done

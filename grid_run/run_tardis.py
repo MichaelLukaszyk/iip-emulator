@@ -1,9 +1,9 @@
 from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
 from tardis.io.atom_data.base import AtomData
-from param_space.make_csvy import make_csvy
-from param_space.functions import write_df
-from param_space import utilities
+from grid_run.make_csvy import make_csvy
+from grid_run.functions import write_df
+import astropy.constants as c
 import astropy.units as u
 import pandas as pd
 import os
@@ -31,7 +31,7 @@ def run_tardis(params, run_index=0):
         if name == 'lum':
             config.supernova.luminosity_requested = value
         elif name == 'log_lsun':
-            config.supernova.luminosity_requested = utilities.from_loglsun(value)
+            config.supernova.luminosity_requested = 10**value * c.L_sun
         elif name == 't_exp':
             config.supernova.time_explosion = value
         elif name == 't_inner':
@@ -54,9 +54,12 @@ def run_tardis(params, run_index=0):
     sim.run_convergence()
     sim.run_final()
 
-    # Run was successful: assign ID, log SED data
+    # Run was successful: modify params, log SED data
+    # Any modifications to params will be written to parameters.log by write_data
     id = str(run_index)
     params['id'] = id
+    params['converged'] = sim.converged
+    params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
