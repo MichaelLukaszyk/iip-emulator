@@ -19,11 +19,11 @@ plasma:
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 1.0e+5
+  no_of_packets: 4.0e+4
   iterations: 50
 
   last_no_of_packets: 1.0e+5
-  no_of_virtual_packets: 8
+  no_of_virtual_packets: 7
   nthreads: 1
 
   convergence_strategy:
