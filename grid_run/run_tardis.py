@@ -1,7 +1,7 @@
 from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
 from tardis.io.atom_data.base import AtomData
-from grid_run.make_csvy import make_csvy
+from grid_run.make_csvy import make_csvy, make_abundances
 from grid_run.functions import write_df
 import astropy.constants as c
 import astropy.units as u
@@ -15,12 +15,17 @@ os.environ["NUMEXPR_NUM_THREADS"] = "1"
 def run_tardis(params, run_index=0):
     # Setup CSVY, then load data
     v_start = 6200 * u.km/u.s
+    abundances = None
     if 'v_start' in params:
         v_start = params['v_start']
+    if 'X' in params and 'Z' in params:
+        abundances = make_abundances(params['X'], params['Z'])
+        
     make_csvy(
         v_start,
         v_stop = v_start * 3,
-        shells = 10
+        shells = 10,
+        abundances = abundances
     )
     current_dir = os.path.dirname(os.path.abspath(__file__))
     atomic = AtomData.from_hdf(os.path.join(current_dir, 'tardis_data/atom_data.h5'))

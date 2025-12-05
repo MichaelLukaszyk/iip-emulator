@@ -8,8 +8,8 @@ import pandas as pd
 
 # Before running:
 # 1. Ensure base_config in grid_run.tardis_data is correct
-# 2. Make changes to make_csvy if shell structure / abdunances changes are needed
-# 3. Create grid.csv file in the iip-emulator directory
+# 2. Make changes to make_csvy if shell structure / abundances changes are needed
+# 3. Create grid.csv file in this run directory
 # 4. Ensure settings below are correct
 # 5. Update sbatch script to match grid length
 # 6. Run sbatch script with tardis conda environment active

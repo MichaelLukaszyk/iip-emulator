@@ -2,6 +2,7 @@
 output/
 .vscode/
 saved_outputs/
+user_data/
 model.csvy
 
 # Byte-compiled / optimized / DLL files
