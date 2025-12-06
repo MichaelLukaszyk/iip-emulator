@@ -39,4 +39,4 @@ montecarlo:
 spectrum:
   start: 1000 angstrom
   stop: 10000 angstrom
-  num: 1000
+  num: 9000
