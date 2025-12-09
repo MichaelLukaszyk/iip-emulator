@@ -54,7 +54,10 @@ def run_tardis(params, run_index=0):
     sim = Simulation.from_config(
         config,
         atom_data = atomic,
-        log_level='CRITICAL'
+        virtual_packet_logging=False,
+        show_convergence_plots=False,
+        export_convergence_plots=False,
+        log_level='CRITICAL',
     )
     sim.run_convergence()
     sim.run_final()

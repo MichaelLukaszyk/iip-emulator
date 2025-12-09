@@ -22,7 +22,7 @@ montecarlo:
   no_of_packets: 4.0e+4
   iterations: 50
 
-  last_no_of_packets: 1.0e+5
+  last_no_of_packets: 5.0e+5
   no_of_virtual_packets: 7
   nthreads: 1
 
@@ -37,6 +37,6 @@ montecarlo:
       damping_constant: 0.5
 
 spectrum:
-  start: 1000 angstrom
-  stop: 10000 angstrom
-  num: 9000
+  start: 3000 angstrom
+  stop: 7000 angstrom
+  num: 1000

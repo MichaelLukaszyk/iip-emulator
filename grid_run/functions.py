@@ -36,7 +36,7 @@ def write_data(data):
 
 def write_df(df, name):
     file_path = os.path.join(folder_dir, name + '.csv')
-    df.to_csv(file_path)
+    df.to_csv(file_path, index=False)
 
 # Step & range functions
 def no_exception(f, v):
