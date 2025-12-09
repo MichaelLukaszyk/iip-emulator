@@ -8,9 +8,9 @@ import astropy.units as u
 import pandas as pd
 import os
 
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "4"
+os.environ["MKL_NUM_THREADS"] = "4"
+os.environ["NUMEXPR_NUM_THREADS"] = "4"
 
 def run_tardis(params, run_index=0):
     # Setup CSVY, then load data
