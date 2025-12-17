@@ -2,7 +2,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from grid_run.run_tardis import run_tardis
-from grid_run.functions import write_data, set_output_dir, set_folder_name
+from grid_run.functions import write_data, get_folder_dir, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
 
@@ -29,6 +29,7 @@ units = {
 current_dir = os.path.dirname(os.path.abspath(__file__))
 grid_dir = os.path.join(current_dir, grid_name)
 df = pd.read_csv(grid_dir)
+df.to_csv(os.path.join(get_folder_dir(), 'grid.csv'), index=False)
 
 # Find specified grid entry
 index = int(sys.argv[1])

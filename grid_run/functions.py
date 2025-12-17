@@ -7,6 +7,12 @@ import os
 output_dir = None
 folder_dir = None
 
+def get_output_dir():
+    return output_dir
+
+def get_folder_dir():
+    return folder_dir
+
 def set_output_dir(new_output_dir):
     global output_dir
     output_dir = new_output_dir
