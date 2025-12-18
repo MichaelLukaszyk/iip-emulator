@@ -2,17 +2,19 @@ from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
 from tardis.io.atom_data.base import AtomData
 from grid_run.make_csvy import make_csvy, make_abundances
-from grid_run.functions import write_df
+from grid_run.functions import write_data, write_df
 import astropy.constants as c
 import astropy.units as u
 import pandas as pd
 import os
 
-os.environ["OMP_NUM_THREADS"] = "4"
-os.environ["MKL_NUM_THREADS"] = "4"
-os.environ["NUMEXPR_NUM_THREADS"] = "4"
+os.environ['OMP_NUM_THREADS'] = '4'
+os.environ['MKL_NUM_THREADS'] = '4'
+os.environ['NUMEXPR_NUM_THREADS'] = '4'
 
-def run_tardis(params, run_index=0):
+def run_tardis(params):
+    id = params['id']
+
     # Setup CSVY, then load data
     v_start = 6200 * u.km/u.s
     abundances = None
@@ -64,11 +66,10 @@ def run_tardis(params, run_index=0):
 
     # Run was successful: modify params, log SED data
     # Any modifications to params will be written to parameters.log by write_data
-    id = str(run_index)
-    params['id'] = id
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    write_df(df, id + '_sed')
+    write_df(df, str(id) + '_sed')
+    write_data(params)
