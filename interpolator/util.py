@@ -6,8 +6,8 @@ import pandas as pd
 import numpy as np
 import os
 
-def read_grid_runs(params_path, folder_path, param_names):
-    params_df = pd.read_json(params_path, lines=True)
+def read_grid_runs(folder_path, param_names):
+    params_df = pd.read_json(os.path.join(folder_path, 'parameters.log'), lines=True)
     params_df = params_df[params_df['converged'] == True]
     wav = None
     seds = []

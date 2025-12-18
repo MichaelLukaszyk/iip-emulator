@@ -68,8 +68,15 @@ def run_tardis(params):
     # Any modifications to params will be written to parameters.log by write_data
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
+
     wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    write_df(df, str(id) + '_sed')
+    write_df(df, str(id) + '_virtual_sed')
+
+    wavelength = sim.spectrum_solver.spectrum_integrated.wavelength
+    L_density = sim.spectrum_solver.spectrum_integrated.luminosity_density_lambda
+    df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
+    write_df(df, str(id) + '_integrated_sed')
+
     write_data(params)

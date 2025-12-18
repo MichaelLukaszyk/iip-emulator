@@ -37,6 +37,6 @@ montecarlo:
       damping_constant: 0.5
 
 spectrum:
-  start: 3000 angstrom
-  stop: 7000 angstrom
-  num: 1000
+  start: 1000 angstrom
+  stop: 10000 angstrom
+  num: 5000
