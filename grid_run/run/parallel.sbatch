@@ -9,14 +9,14 @@
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem-per-cpu=8G
-#SBATCH --time=8:00:00
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G
+#SBATCH --time=20:00:00
 
 #SBATCH --array=0-999%100
 
-START=$(( SLURM_ARRAY_TASK_ID * 5 ))
-END=$(( START + 4 ))
+START=$(( SLURM_ARRAY_TASK_ID * 10 ))
+END=$(( START + 9 ))
 
 for (( i=$START; i<=$END; i++ )); do
     python ~/iip-emulator/grid_run/run/run.py $i

@@ -8,7 +8,7 @@ import pandas as pd
 
 # Settings
 set_output_dir('/u/ml168/scratch')
-set_folder_name('5000_runs')
+set_folder_name('10000_runs')
 units = {
     'lum': u.erg/u.s,
     't_exp': u.day,
