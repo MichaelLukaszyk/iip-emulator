@@ -18,16 +18,20 @@ def run_tardis(params):
     # Setup CSVY, then load data
     v_start = 6200 * u.km/u.s
     abundances = None
+    n = None
     if 'v_start' in params:
         v_start = params['v_start']
+    if 'n' in params:
+        n = params['n']
     if 'X' in params and 'Z' in params:
         abundances = make_abundances(params['X'], params['Z'])
         
     make_csvy(
         v_start,
-        v_stop = v_start * 3,
-        shells = 10,
-        abundances = abundances
+        v_stop=v_start*3,
+        shells=10,
+        n=n,
+        abundances=abundances
     )
     current_dir = os.path.dirname(os.path.abspath(__file__))
     atomic = AtomData.from_hdf(os.path.join(current_dir, 'tardis_data/atom_data.h5'))

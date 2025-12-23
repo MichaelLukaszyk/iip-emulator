@@ -5,6 +5,7 @@ from grid_run.run_tardis import run_tardis
 from grid_run.functions import get_folder_dir, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
+import shutil
 
 # Settings
 set_output_dir('/u/ml168/scratch')
@@ -16,13 +17,20 @@ units = {
     'v_start': u.km/u.s
 }
 
-# Read grid, copy into output directory
+# Copy grid and base config files
 current_dir = os.path.dirname(os.path.abspath(__file__))
-grid_dir = os.path.join(current_dir, 'grid.csv')
-df = pd.read_csv(grid_dir)
-df.to_csv(os.path.join(get_folder_dir(), 'grid.csv'), index=False)
+grid_out_path = os.path.join(get_folder_dir(), 'grid.csv')
+grid_in_path = os.path.join(current_dir, 'grid.csv')
+if not os.path.isfile(grid_out_path):
+    shutil.copyfile(grid_in_path, grid_out_path)
+
+config_out_path = os.path.join(get_folder_dir(), 'base_config.yml')
+config_in_path = os.path.join(current_dir, '../tardis_data/base_config.yml')
+if not os.path.isfile(config_out_path):
+    shutil.copyfile(config_in_path, config_out_path)
 
 # Find specified grid entry
+df = pd.read_csv(grid_in_path)
 index = int(sys.argv[1])
 row = df.iloc[index]
 

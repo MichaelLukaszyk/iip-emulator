@@ -12,7 +12,7 @@ def read_grid_runs(folder_path, param_names):
     wav = None
     seds = []
     for run in params_df.itertuples():
-        sed_df = pd.read_csv(os.path.join(folder_path, str(run.id) + '_sed.csv'))
+        sed_df = pd.read_csv(os.path.join(folder_path, str(run.id) + '_integrated_sed.csv'))
         seds.append(sed_df['L_density'].values)
         if wav is None:
             wav = sed_df['wavelength'].values

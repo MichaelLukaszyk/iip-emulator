@@ -4,6 +4,8 @@ output/
 saved_outputs/
 user_data/
 model.csvy
+ultranest/
+*.npz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
