@@ -41,3 +41,6 @@ spectrum:
   start: 3000 angstrom
   stop: 7000 angstrom
   num: 1000
+  method: integrated
+  integrated:
+    compute: CPU

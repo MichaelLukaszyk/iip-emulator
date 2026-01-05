@@ -25,7 +25,8 @@ def read_grid_runs(folder_path, param_names):
 
 def evaluate_predictions(y_test, y_pred, x_axis, title):
     with np.errstate(all='ignore'):
-        fe = np.abs(np.log10(y_pred + 1) - np.log10(y_test + 1)) / np.log10(y_test + 1)
+        # fe = np.abs(np.log10(y_pred + 1) - np.log10(y_test + 1)) / np.log10(y_test + 1)
+        fe = np.abs((y_pred - y_test) / y_test)
         fe[np.isinf(fe)] = np.nan
         mfe = np.nanmean(fe, axis=1)
 
