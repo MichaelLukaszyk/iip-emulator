@@ -1,5 +1,5 @@
 tardis_config_version: v1.0
-atom_data: "atom_data.h5"
+atom_data: "kurucz_cd23_chianti_H_He_latest.h5"
 csvy_model: "model.csvy"
 
 supernova:
@@ -41,6 +41,3 @@ spectrum:
   start: 3000 angstrom
   stop: 7000 angstrom
   num: 1000
-  method: integrated
-  integrated:
-    compute: CPU

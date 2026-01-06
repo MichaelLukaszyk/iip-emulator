@@ -1,0 +1,2 @@
+from tardis.io.atom_data import download_atom_data
+download_atom_data('kurucz_cd23_chianti_H_He_latest')

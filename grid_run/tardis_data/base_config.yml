@@ -1,5 +1,5 @@
 tardis_config_version: v1.0
-atom_data: "atom_data.h5"
+atom_data: "kurucz_cd23_chianti_H_He_latest.h5"
 csvy_model: "model.csvy"
 
 supernova:
@@ -19,7 +19,7 @@ plasma:
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 4.0e+4
+  no_of_packets: 1.0e+5
   iterations: 50
 
   last_no_of_packets: 1.0e+6
@@ -32,7 +32,7 @@ montecarlo:
     fraction: 0.95
     hold_iterations: 3
     damping_constant: 0.5
-    threshold: 0.05
+    threshold: 0.025
     t_inner:
       damping_constant: 0.5
 
