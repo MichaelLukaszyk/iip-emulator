@@ -13,11 +13,10 @@
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=20:00:00
 
-#SBATCH --array=0-999%100
-
 START=$(( SLURM_ARRAY_TASK_ID * 10 ))
 END=$(( START + 9 ))
+MAX_INDEX=$(($(wc -l < grid.csv) - 2))
 
-for (( i=$START; i<=$END; i++ )); do
+for (( i=START; i<=END && i<=MAX_INDEX; i++ )); do
     python ~/iip-emulator/grid_run/run/run.py $i
 done
