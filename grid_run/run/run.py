@@ -9,7 +9,7 @@ import shutil
 
 # Settings
 set_output_dir('/u/ml168/scratch')
-set_folder_name('grid_runs')
+set_folder_name('grid_run')
 units = {
     'lum': u.erg/u.s,
     't_exp': u.day,
@@ -29,23 +29,27 @@ config_in_path = os.path.join(current_dir, '../tardis_data/base_config.yml')
 if not os.path.isfile(config_out_path):
     shutil.copyfile(config_in_path, config_out_path)
 
-# Find specified grid entry
-df = pd.read_csv(grid_in_path)
 index = int(sys.argv[1])
-row = df.iloc[index]
 
-# Add on units, copy over parameters
-params = {}
-for name, value in row.items():
-    if name in units:
-        params[name] = value * units[name]
-    else:
-        params[name] = value
-params['id'] = int(params['id'])
+if index == -1:
+    print('Initialization complete, you may proceed to submit the batch job.')
+else:
+    # Find specified grid entry
+    df = pd.read_csv(grid_in_path)
+    row = df.iloc[index]
 
-# Write data if successful
-try:
-    print('\n' + 'STARTING ID #' + str(params['id']) + '\n')
-    run_tardis(params)
-except Exception as e:
-    print('Error:', e)
+    # Add on units, copy over parameters
+    params = {}
+    for name, value in row.items():
+        if name in units:
+            params[name] = value * units[name]
+        else:
+            params[name] = value
+    params['id'] = int(params['id'])
+
+    # Write data if successful
+    try:
+        print('\n' + 'STARTING ID #' + str(params['id']) + '\n')
+        run_tardis(params)
+    except Exception as e:
+        print('Error:', e)
