@@ -5,14 +5,37 @@ import astropy.units as u
 import pandas as pd
 import numpy as np
 import os
+from astropy.constants import L_sun, m_p, sigma_T, sigma_sb
 
-def read_grid_runs(folder_path, param_names):
+def distance(scale):
+    # Spectral flux in erg/s/ang/cm^2, model luminosity in erg/s/ang
+    # F = (1/k)L, k = 4*pi*d^2
+    return (np.sqrt(scale/4/np.pi) * u.cm).to(u.Mpc)
+
+def to_loglsun(lum):
+    return np.log10((lum/L_sun).to(u.dimensionless_unscaled))
+
+def to_lum(log_lsun):
+    return (10**log_lsun*L_sun).to(u.erg/u.s)
+
+def guess_v_start(t_exp, X_H, X_He, tau, n=10, rho_0=1.948e-14*u.g/u.cm**3, v_0=8000*u.km/u.s, t_0 = 16*u.day):
+    # Density profile: rho = rho_0 * (v/v_0)**(-n) * (t_0/t)**3
+    # tau = optical depth
+    v_start = ( tau*m_p*t_exp**2*(n-1) / (sigma_T*rho_0*v_0**n*t_0**3) )**(1/(1-n)) * (X_H + X_He/2)**(1/(n-1))
+    return v_start.to(u.km/u.s)
+
+def initial_t_inner(L, t_exp, v_start):
+    R_inner = v_start * t_exp
+    A = 4 * np.pi * R_inner**2 * sigma_sb
+    return ((L / A)**0.25).to(u.K)
+
+def parse_runs_folder(folder_path, param_names, sed_name='_integrated_sed.csv'):
     params_df = pd.read_json(os.path.join(folder_path, 'parameters.log'), lines=True)
     params_df = params_df[params_df['converged'] == True]
     wav = None
     seds = []
     for run in params_df.itertuples():
-        sed_df = pd.read_csv(os.path.join(folder_path, str(run.id) + '_integrated_sed.csv'))
+        sed_df = pd.read_csv(os.path.join(folder_path, str(run.id) + sed_name))
         seds.append(sed_df['L_density'].values)
         if wav is None:
             wav = sed_df['wavelength'].values
@@ -22,6 +45,36 @@ def read_grid_runs(folder_path, param_names):
     X = params_df[param_names].map(convert)
     y = np.array(seds)
     return X, y, wav
+
+def save_runs(folder_path, param_names, file_name, sed_name='_integrated_sed.csv'):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    save_dir = os.path.join(current_dir, '../user_data/saved_runs/')
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    X, y, wav_mod = parse_runs_folder(folder_path, param_names, sed_name)
+    np.savez(
+        save_dir + file_name + '.npz',
+        param_names=param_names,
+        X=X,
+        y=y,
+        wav=wav_mod
+    )
+
+def read_runs(file_name):
+    """
+    Parameters:
+        file_name (string): The name used when saving the original file, no file type included.
+    
+    Returns:
+        param_names, X, y, wav_mod
+    """
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    save_path = os.path.join(current_dir, '../user_data/saved_runs/' + file_name + '.npz')
+    if os.path.exists(save_path):
+        data = np.load(save_path)
+        param_names, X, y, wav_mod = data['param_names'], data['X'], data['y'], data['wav']
+        return param_names, X, y, wav_mod
 
 def evaluate_predictions(y_test, y_pred, x_axis, title):
     with np.errstate(all='ignore'):

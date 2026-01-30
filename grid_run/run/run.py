@@ -9,7 +9,7 @@ import shutil
 
 # Settings
 set_output_dir('/u/ml168/scratch')
-set_folder_name('10000_runs')
+set_folder_name('grid_runs')
 units = {
     'lum': u.erg/u.s,
     't_exp': u.day,

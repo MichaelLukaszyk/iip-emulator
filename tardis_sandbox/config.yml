@@ -11,7 +11,6 @@ plasma:
   excitation: dilute-lte
   radiative_rates_type: detailed
   line_interaction_type: macroatom
-  # initial_t_inner: 16000 K
 
   #nlte_ionization_species: [H I, H II, He I, He II]
   #continuum_interaction:
@@ -33,7 +32,7 @@ montecarlo:
     fraction: 0.95
     hold_iterations: 3
     damping_constant: 0.5
-    threshold: 0.05
+    threshold: 0.025
     t_inner:
       damping_constant: 0.5
 
