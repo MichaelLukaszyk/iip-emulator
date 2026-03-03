@@ -12,10 +12,12 @@ plasma:
   radiative_rates_type: detailed
   line_interaction_type: macroatom
 
-  #nlte_ionization_species: [H I, H II, He I, He II]
-  #continuum_interaction:
-  #  species: [H I, H II, He I, He II]
-  #  enable_adiabatic_cooling: True
+  # nlte_ionization_species: [H I, H II, He I, He II]
+  # nlte:
+  #   species: [H I, H II, He I, He II]
+  # continuum_interaction:
+  #   species: [H I, H II, He I, He II]
+  #   enable_adiabatic_cooling: True
 
 montecarlo:
   seed: 23111963
@@ -25,6 +27,7 @@ montecarlo:
   last_no_of_packets: 1.0e+5
   no_of_virtual_packets: 3 # 10
   nthreads: 4
+  enable_full_relativity: False
 
   convergence_strategy:
     type: damped

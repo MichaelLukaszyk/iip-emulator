@@ -1,11 +1,10 @@
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-from grid_run.run_tardis import run_tardis
-from grid_run.functions import get_folder_dir, set_output_dir, set_folder_name
+from emulator.grid_run.run_tardis import run_tardis
+from emulator.grid_run.output import get_folder_dir, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
 import shutil
+import sys
+import os
 
 # Settings
 set_output_dir('/u/ml168/scratch')

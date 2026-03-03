@@ -101,8 +101,8 @@ def evaluate_predictions(y_test, y_pred, x_axis, title):
     plt.figure(figsize=(11, 4))
     plt.subplot(121)
     for index, color, type in [(min_i, 'green', 'best'), (med_i, 'orange', 'median'), (max_i, 'red', 'worst')]:
-        plt.plot(x_axis, preds[index], c=color, label=type + ' mfe: ' + f'{mfe[index]:.1e}')
-        plt.plot(x_axis, tests[index], c=color, ls=':')
+        plt.plot(x_axis, preds[index] / tests[index].max(), c=color, label=type + ' mfe: ' + f'{mfe[index]:.1e}')
+        plt.plot(x_axis, tests[index] / tests[index].max(), c=color, ls=':')
     plt.title(title)
     plt.legend()
 

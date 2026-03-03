@@ -1,21 +1,18 @@
 from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
-from tardis.io.atom_data.base import AtomData
-from grid_run.make_csvy import make_csvy, make_abundances
-from grid_run.functions import write_data, write_df
+from emulator.grid_run.make_csvy import make_csvy, make_abundances
+from emulator.grid_run.output import write_data, write_df
 import astropy.constants as c
 import astropy.units as u
 import pandas as pd
 import os
 
-os.environ['OMP_NUM_THREADS'] = '1'
-os.environ['MKL_NUM_THREADS'] = '1'
-os.environ['NUMEXPR_NUM_THREADS'] = '1'
+def set_threads(threads):
+    os.environ['OMP_NUM_THREADS'] = str(threads)
+    os.environ['MKL_NUM_THREADS'] = str(threads)
+    os.environ['NUMEXPR_NUM_THREADS'] = str(threads)
 
-def run_tardis(params):
-    id = params['id']
-
-    # Setup CSVY, then load data
+def standard_csvy(params, csvy_path=None):
     v_start = 6200 * u.km/u.s
     abundances = None
     n = None
@@ -31,12 +28,15 @@ def run_tardis(params):
         v_stop=v_start*3,
         shells=40,
         n=n,
+        csvy_path=csvy_path,
         abundances=abundances
     )
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    config = Configuration.from_yaml(os.path.join(current_dir, 'tardis_data/base_config.yml'))
 
-    # Update configuration with params
+def build_config(params, config=None):
+    if not config:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        config = Configuration.from_yaml(os.path.join(current_dir, 'tardis_data/base_config.yml'))
+    
     for name, value in params.items():
         if name == 'lum':
             config.supernova.luminosity_requested = value
@@ -54,20 +54,11 @@ def run_tardis(params):
             config.montecarlo.last_no_of_packets = value
         elif name == 'virtual_packets':
             config.montecarlo.no_of_virtual_packets = value
+    return config
 
-    # Run simulation
-    sim = Simulation.from_config(
-        config,
-        virtual_packet_logging=False,
-        show_convergence_plots=False,
-        export_convergence_plots=False,
-        log_level='CRITICAL',
-    )
-    sim.run_convergence()
-    sim.run_final()
-
-    # Run was successful: modify params, log SED data
+def log_sim(params, sim):
     # Any modifications to params will be written to parameters.log by write_data
+    id = params['id']
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
 
@@ -82,3 +73,17 @@ def run_tardis(params):
     write_df(df, str(id) + '_integrated_sed')
 
     write_data(params)
+
+def run_tardis(params):
+    standard_csvy(params)
+    config = build_config(params)
+    sim = Simulation.from_config(
+        config,
+        virtual_packet_logging=False,
+        show_convergence_plots=False,
+        export_convergence_plots=False,
+        log_level='CRITICAL',
+    )
+    sim.run_convergence()
+    sim.run_final()
+    log_sim(params, sim)

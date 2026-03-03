@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iip-emulator"
+version = "1.0.0"
+description = "Type IIP supernova spectral emulator"
+authors = [{name="Michael Lukaszyk"}]
+dependencies = []

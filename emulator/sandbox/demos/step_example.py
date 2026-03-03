@@ -1,5 +1,6 @@
-from grid_run.functions import step_through_space, step_through_space_extrema, set_output_dir, set_folder_name
-from grid_run.run_tardis import run_tardis
+from emulator.grid_run.output import set_output_dir, set_folder_name
+from emulator.grid_run.steppers import step_through_space, step_through_space_extrema
+from emulator.grid_run.run_tardis import run_tardis
 import astropy.units as u
 
 start_data = {
