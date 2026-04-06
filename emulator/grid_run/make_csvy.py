@@ -34,13 +34,18 @@ def make_abundances(X, Z):
 
 default_abundances = make_abundances(0.7, 0.02)
 
-def make_csvy(v_start, v_stop, shells, n=10, csvy_path=default_path, abundances=default_abundances):
+def make_csvy(v_start, v_stop, shells, n=10, config_path=None, abundances=default_abundances):
+    # CSVY model must be in same directory as configuration
+    if config_path:
+        csvy_path = os.path.join(os.path.dirname(config_path), 'model.csvy')
+    else:
+        csvy_path = default_path
     with open(csvy_path, 'w') as file:
         units = v_start.unit
         start = v_start.value
         stop = v_stop.to(units).value
 
-        # Write csv metadata
+        # Write CSVY metadata
         metadata = {
             'tardis_model_config_version': 'v1.0',
             'model_density_time_0': '16.0 day',
@@ -76,7 +81,7 @@ def make_csvy(v_start, v_stop, shells, n=10, csvy_path=default_path, abundances=
         velocities = (np.logspace(log_start, np.log10(stop-start+10**log_start), num=shells+1) + start - 10**log_start)*units
         densities = rho_0 * (velocities / v_0)**(-n)
 
-        # Write csv shell content
+        # Write CSVY shell content
         fields = ['velocity', 'density'] + list(abundances.keys())
         shells = [[velocities[i].value, densities[i].to(u.g / u.cm**3).value] + list(abundances.values()) for i in range(1 + shells)]
         writer = csv.writer(file)

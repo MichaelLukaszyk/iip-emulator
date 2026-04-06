@@ -3,8 +3,8 @@ atom_data: "kurucz_cd23_chianti_H_He_latest.h5"
 csvy_model: "model.csvy"
 
 supernova:
-  luminosity_requested: 9.398 log_lsun
-  time_explosion: 11 day
+  luminosity_requested: 8.302 log_lsun
+  time_explosion: 11.96 day
 
 plasma:
   ionization: nebular
@@ -12,19 +12,22 @@ plasma:
   radiative_rates_type: detailed
   line_interaction_type: macroatom
 
-  #nlte_ionization_species: [H I, H II, He I, He II]
-  #continuum_interaction:
-  #  species: [H I, H II, He I, He II]
-  #  enable_adiabatic_cooling: True
+  # nlte_ionization_species: [H I, H II, He I, He II]
+  # nlte:
+  #   species: [H I, H II, He I, He II]
+  # continuum_interaction:
+  #   species: [H I, H II, He I, He II]
+  #   enable_adiabatic_cooling: True
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 4.0e+5
+  no_of_packets: 4.0e+4
   iterations: 50
 
-  last_no_of_packets: 8.0e+5
-  no_of_virtual_packets: 0
-  nthreads: 1
+  last_no_of_packets: 1.0e+5
+  no_of_virtual_packets: 3 # 10
+  nthreads: 4
+  enable_full_relativity: False
 
   convergence_strategy:
     type: damped
@@ -38,5 +41,5 @@ montecarlo:
 
 spectrum:
   start: 3000 angstrom
-  stop: 7000 angstrom
-  num: 1000
+  stop: 10000 angstrom
+  num: 1500

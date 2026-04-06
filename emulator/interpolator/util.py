@@ -78,15 +78,14 @@ def read_runs(file_name):
 
 def evaluate_predictions(y_test, y_pred, x_axis, title):
     with np.errstate(all='ignore'):
-        # fe = np.abs(np.log10(y_pred + 1) - np.log10(y_test + 1)) / np.log10(y_test + 1)
         fe = np.abs((y_pred - y_test) / y_test)
         fe[np.isinf(fe)] = np.nan
-        mfe = np.nanmean(fe, axis=1)
+        actual_mfe = np.nanmean(fe, axis=1)
 
     # Filter out predictions that have an invalid mfe
-    mask = np.isfinite(mfe)
+    mask = np.isfinite(actual_mfe) & (actual_mfe <= np.percentile(actual_mfe, 95))
     fe = fe[mask]
-    mfe = mfe[mask]
+    mfe = actual_mfe[mask]
     tests = y_test[mask]
     preds = y_pred[mask]
 
@@ -103,17 +102,18 @@ def evaluate_predictions(y_test, y_pred, x_axis, title):
     for index, color, type in [(min_i, 'green', 'best'), (med_i, 'orange', 'median'), (max_i, 'red', 'worst')]:
         plt.plot(x_axis, preds[index] / tests[index].max(), c=color, label=type + ' mfe: ' + f'{mfe[index]:.1e}')
         plt.plot(x_axis, tests[index] / tests[index].max(), c=color, ls=':')
-    plt.title(title)
+    plt.xlabel(r'Wavelength ($\AA$)')
+    plt.ylabel('Normalized flux')
     plt.legend()
 
     # Histogram
     plt.subplot(122)
-    mask = mfe <= np.percentile(mfe, 95)
-    plt.hist(mfe[mask], 100)
-    plt.title(title)
-    plt.xlabel('mean fractional error')
-
-    print('mean mfe: ' + f'{np.mean(mfe):.1e}')
+    plt.hist(mfe, 100)
+    plt.xlabel('Mean fractional error')
+    plt.ylabel('Count')
+    
+    plt.suptitle(title)
+    return actual_mfe
 
 def outline_mask_region(x, mask):
     trues = np.where(mask)[0]

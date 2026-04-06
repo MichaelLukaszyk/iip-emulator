@@ -16,13 +16,14 @@ units = {
     'v_start': u.km/u.s
 }
 
-# Copy grid and base config files
+# Copy grid
 current_dir = os.path.dirname(os.path.abspath(__file__))
 grid_out_path = os.path.join(get_folder_dir(), 'grid.csv')
 grid_in_path = os.path.join(current_dir, 'grid.csv')
 if not os.path.isfile(grid_out_path):
     shutil.copyfile(grid_in_path, grid_out_path)
 
+# Copy config
 config_out_path = os.path.join(get_folder_dir(), 'base_config.yml')
 config_in_path = os.path.join(current_dir, '../tardis_data/base_config.yml')
 if not os.path.isfile(config_out_path):
