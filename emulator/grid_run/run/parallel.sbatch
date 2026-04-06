@@ -18,5 +18,5 @@ END=$(( START + 9 ))
 MAX_INDEX=$(($(wc -l < grid.csv) - 2))
 
 for (( i=START; i<=END && i<=MAX_INDEX; i++ )); do
-    python ~/iip-emulator/grid_run/run/run.py $i
+    python ~/iip-emulator/emulator/grid_run/run/run.py $i
 done
