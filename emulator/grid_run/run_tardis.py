@@ -142,7 +142,7 @@ def get_phot(sim, v, tau, tau_phot=2.0/3):
     T = sim.plasma.t_rad
     v_phot = interp1d(tau, v)(tau_phot)
     T_phot = interp1d(tau, T)(tau_phot)
-    return v_phot, T_phot
+    return float(v_phot), float(T_phot)
 
 def log_sim(params, sim):
     # Any modifications to params will be written to parameters.log by write_data
@@ -155,11 +155,11 @@ def log_sim(params, sim):
     print('t_exp:', params['t_exp'].value)
     print('v_phot:', v_phot)
     print('T_phot:', T_phot)
-    print('T_inner:', sim.plasma.t_rad[0])
+    print('T_inner:', float(sim.plasma.t_rad[0]))
     print('\n')
     params['v_phot'] = v_phot
     params['T_phot'] = T_phot
-    params['T_inner'] = sim.plasma.t_rad[0]
+    params['T_inner'] = float(sim.plasma.t_rad[0])
     print(params)
 
     # wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
