@@ -151,12 +151,16 @@ def log_sim(params, sim):
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
     v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'].value)
     v_phot, T_phot = get_phot(sim, v, tau_rosseland)
+    print('\n')
     print('t_exp:', params['t_exp'].value)
     print('v_phot:', v_phot)
     print('T_phot:', T_phot)
+    print('T_inner:', sim.plasma.t_rad[0])
+    print('\n')
     params['v_phot'] = v_phot
     params['T_phot'] = T_phot
     params['T_inner'] = sim.plasma.t_rad[0]
+    print(params)
 
     # wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     # L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
