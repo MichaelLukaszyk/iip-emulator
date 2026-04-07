@@ -140,8 +140,8 @@ def get_tau(sim, t_exp, plot=False, bin_size=10):
 
 def get_phot(sim, v, tau, tau_phot=2.0/3):
     T = sim.plasma.t_rad
-    v_phot = (interp1d(tau, v)(2/3) *u.cm/u.s).to(u.km/u.s).value
-    T_phot = interp1d(tau, T)(2/3)
+    v_phot = interp1d(tau, v)(tau_phot)
+    T_phot = interp1d(tau, T)(tau_phot)
     return v_phot, T_phot
 
 def log_sim(params, sim):

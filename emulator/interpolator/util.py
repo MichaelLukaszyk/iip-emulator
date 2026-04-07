@@ -18,11 +18,11 @@ def to_loglsun(lum):
 def to_lum(log_lsun):
     return (10**log_lsun*L_sun).to(u.erg/u.s)
 
-def guess_v_start(t_exp, X_H, X_He, tau, n=10, rho_0=1.948e-14*u.g/u.cm**3, v_0=8000*u.km/u.s, t_0 = 16*u.day):
+def calc_v_phot(t_exp, X, n, tau=2.0/3, rho_0=1.948e-14*u.g/u.cm**3, v_0=8000*u.km/u.s, t_0=16*u.day):
     # Density profile: rho = rho_0 * (v/v_0)**(-n) * (t_0/t)**3
     # tau = optical depth
-    v_start = ( tau*m_p*t_exp**2*(n-1) / (sigma_T*rho_0*v_0**n*t_0**3) )**(1/(1-n)) * (X_H + X_He/2)**(1/(n-1))
-    return v_start.to(u.km/u.s)
+    v_phot = np.power(tau*m_p*np.power(t_exp, 2) * (n-1) / (sigma_T*rho_0*np.power(np.full_like(n, v_0.value), n)*t_0**3), 1/(1-n)) * np.power(X, 1/(n-1))
+    return v_phot.to(u.km/u.s)
 
 def initial_t_inner(L, t_exp, v_start):
     R_inner = v_start * t_exp
