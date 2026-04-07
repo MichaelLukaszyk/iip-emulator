@@ -149,7 +149,7 @@ def log_sim(params, sim):
     id = params['id']
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
-    v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'])
+    v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'].value)
     v_phot, T_phot = get_phot(sim, v, tau_rosseland)
     params['v_phot'] = v_phot
     params['T_phot'] = T_phot

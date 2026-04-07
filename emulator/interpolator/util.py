@@ -19,10 +19,10 @@ def to_lum(log_lsun):
     return (10**log_lsun*L_sun).to(u.erg/u.s)
 
 def calc_v_phot(t_exp, X, n, tau=2.0/3, rho_0=1.948e-14*u.g/u.cm**3, v_0=8000*u.km/u.s, t_0=16*u.day):
-    # Density profile: rho = rho_0 * (v/v_0)**(-n) * (t_0/t)**3
-    # tau = optical depth
-    v_phot = np.power(tau*m_p*np.power(t_exp, 2) * (n-1) / (sigma_T*rho_0*np.power(np.full_like(n, v_0.value), n)*t_0**3), 1/(1-n)) * np.power(X, 1/(n-1))
-    return v_phot.to(u.km/u.s)
+    numer = tau*m_p*(n-1)*t_exp**2
+    denom = sigma_T*rho_0*v_0*X*t_0**3
+    v_phot = v_0 * (numer/denom).to(u.dimensionless_unscaled).value**(1/(1-n))
+    return v_phot
 
 def initial_t_inner(L, t_exp, v_start):
     R_inner = v_start * t_exp
