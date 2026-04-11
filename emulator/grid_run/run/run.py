@@ -9,12 +9,6 @@ import os
 # Settings
 set_output_dir('/u/ml168/scratch')
 set_folder_name('grid_run')
-units = {
-    'lum': u.erg/u.s,
-    't_exp': u.day,
-    't_inner': u.K,
-    'v_start': u.km/u.s
-}
 
 # Copy grid
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -37,14 +31,7 @@ else:
     # Find specified grid entry
     df = pd.read_csv(grid_in_path)
     row = df.iloc[index]
-
-    # Add on units, copy over parameters
-    params = {}
-    for name, value in row.items():
-        if name in units:
-            params[name] = value * units[name]
-        else:
-            params[name] = value
+    params = row.to_dict()
     params['id'] = int(params['id'])
 
     # Write data if successful

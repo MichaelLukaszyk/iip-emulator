@@ -2,6 +2,7 @@ from tardis.io.configuration.config_reader import Configuration
 from tardis.simulation import Simulation
 from emulator.grid_run.make_csvy import make_csvy, make_abundances
 from emulator.grid_run.output import write_data, write_df
+from emulator.interpolator import util
 from scipy.interpolate import interp1d
 import astropy.constants as const
 import astropy.units as u
@@ -15,21 +16,29 @@ def set_threads(threads):
     os.environ['NUMEXPR_NUM_THREADS'] = str(threads)
 
 def standard_csvy(params, config_path=None):
-    v_start = 6200 * u.km/u.s
+    # Use make_csvy for most cases, this is just in case you have missing parameters and want to have default values
+    t_exp = 16
+    rho_0 = 1.948e-14
     abundances = None
-    n = None
-    if 'v_start' in params:
-        v_start = params['v_start']
+    X = 0.7
+    n = 10
+    if 't_exp' in params:
+        t_exp = params['t_exp']
     if 'n' in params:
         n = params['n']
+    if 'X' in params:
+        X = params['X']
     if 'X' in params and 'Z' in params:
         abundances = make_abundances(params['X'], params['Z'])
-        
+    if 'rho_0' in params:
+        rho_0 = params['rho_0']
+
     make_csvy(
-        v_start,
-        v_stop=v_start*3,
         shells=40,
+        t_exp=t_exp,
+        X=X,
         n=n,
+        rho_0=rho_0,
         config_path=config_path,
         abundances=abundances
     )
@@ -42,13 +51,13 @@ def build_config(params, config_path=None):
     
     for name, value in params.items():
         if name == 'lum':
-            config.supernova.luminosity_requested = value
+            config.supernova.luminosity_requested = value*u.erg/u.s
         elif name == 'log_lsun':
-            config.supernova.luminosity_requested = 10**value * const.L_sun
+            config.supernova.luminosity_requested = 10**value*const.L_sun
         elif name == 't_exp':
-            config.supernova.time_explosion = value
+            config.supernova.time_explosion = value*u.day
         elif name == 't_inner':
-            config.plasma.initial_t_inner = value
+            config.plasma.initial_t_inner = value*u.K
         elif name == 'seed':
             config.montecarlo.seed = value
         elif name == 'packets':
@@ -138,10 +147,10 @@ def get_tau(sim, t_exp, plot=False, bin_size=10):
     kappa_planck
     return v, tau_thomson, tau_expansion, tau_planck, tau_rosseland
 
-def get_phot(sim, v, tau, tau_phot=2.0/3):
+def get_phot(sim, v, tau):
     T = sim.plasma.t_rad
-    v_phot = interp1d(tau, v)(tau_phot)
-    T_phot = interp1d(tau, T)(tau_phot)
+    v_phot = interp1d(tau, v)(2.0/3)
+    T_phot = interp1d(tau, T)(2.0/3)
     return float(v_phot), float(T_phot)
 
 def log_sim(params, sim):
@@ -149,10 +158,10 @@ def log_sim(params, sim):
     id = params['id']
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
-    v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'].value)
-    v_phot, T_phot = get_phot(sim, v, tau_rosseland)
-    params['v_phot'] = v_phot
-    params['T_phot'] = T_phot
+    # v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'])
+    # v_phot, T_phot = get_phot(sim, v, tau_rosseland)
+    # params['rosseland_v_phot'] = v_phot
+    # params['rosseland_T_phot'] = T_phot
     params['T_inner'] = float(sim.plasma.t_rad[0])
 
     # wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength

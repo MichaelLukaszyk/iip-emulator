@@ -12,17 +12,35 @@ def distance(scale):
     # F = (1/k)L, k = 4*pi*d^2
     return (np.sqrt(scale/4/np.pi) * u.cm).to(u.Mpc)
 
+def blackbody_L(t_exp, T, v):
+    r = v*t_exp
+    L = 4*np.pi*r**2 * sigma_sb * T**4
+    return L.to(u.erg/u.s)
+
 def to_loglsun(lum):
     return np.log10((lum/L_sun).to(u.dimensionless_unscaled))
 
 def to_lum(log_lsun):
     return (10**log_lsun*L_sun).to(u.erg/u.s)
 
-def calc_v_phot(t_exp, X, n, tau=2.0/3, rho_0=1.948e-14*u.g/u.cm**3, v_0=8000*u.km/u.s, t_0=16*u.day):
-    numer = tau*m_p*(n-1)*t_exp**2
-    denom = sigma_T*rho_0*v_0*X*t_0**3
-    v_phot = v_0 * (numer/denom).to(u.dimensionless_unscaled).value**(1/(1-n))
-    return v_phot
+def calc_v_outer(v_phot, n):
+    return v_phot*(0.01)**(-1/n)
+
+def calc_v_phot(t_exp, X, n, rho_0=1.948e-14):
+    t_exp *= u.day
+    rho_0 *= u.g/u.cm**3
+    tau = 2.0/3
+    v_phot = tau*m_p*(n-1)/(sigma_T*t_exp*rho_0*X)
+    return v_phot.to(u.km/u.s).value
+
+def calc_model_mass(t_exp, v_phot, v_outer, n, rho_0=1.948e-14):
+    t_exp *= u.day
+    v_phot *= u.km/u.s
+    v_outer *= u.km/u.s
+    rho_0 *= u.g/u.cm**3
+    M = 4*np.pi*rho_0 * t_exp**3 * v_phot**n / (n-3) * (v_phot**(3-n) - v_outer**(3-n))
+    E = 2*np.pi*rho_0 * t_exp**3 * v_phot**n / (n-5) * (v_phot**(5-n) - v_outer**(5-n))
+    return M.to(u.kg), E.to(u.erg)
 
 def initial_t_inner(L, t_exp, v_start):
     R_inner = v_start * t_exp

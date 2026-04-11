@@ -1,14 +1,9 @@
+from emulator.interpolator import util
 import astropy.units as u
 import numpy as np
 import yaml
 import csv
 import os
-
-density = {
-    'type': 'power_law',
-    'rho_0': '1.948e-14 g/cm^3',
-    'v_0': '8000 km/s',
-}
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 default_path = os.path.join(current_dir, 'tardis_data/model.csvy')
@@ -34,21 +29,20 @@ def make_abundances(X, Z):
 
 default_abundances = make_abundances(0.7, 0.02)
 
-def make_csvy(v_start, v_stop, shells, n=10, config_path=None, abundances=default_abundances):
+def make_csvy(shells, t_exp, X, n=10, rho_0=1.948e-14, config_path=None, abundances=default_abundances):
+    v_phot = util.calc_v_phot(t_exp=t_exp, X=X, n=n, rho_0=rho_0)
+    v_outer = util.calc_v_outer(v_phot=v_phot, n=n)
+
     # CSVY model must be in same directory as configuration
     if config_path:
         csvy_path = os.path.join(os.path.dirname(config_path), 'model.csvy')
     else:
         csvy_path = default_path
     with open(csvy_path, 'w') as file:
-        units = v_start.unit
-        start = v_start.value
-        stop = v_stop.to(units).value
-
         # Write CSVY metadata
         metadata = {
             'tardis_model_config_version': 'v1.0',
-            'model_density_time_0': '16.0 day',
+            'model_density_time_0': str(t_exp*u.day),
             'model_isotope_time_0': '100 s',
             'name': 'model.csvy',
 
@@ -69,21 +63,18 @@ def make_csvy(v_start, v_stop, shells, n=10, config_path=None, abundances=defaul
             metadata['datatype']['fields'].append({
                 'name': key
             })
-        metadata['datatype']['fields'][0]['unit'] = str(units)
         file.write('---\n')
         yaml.dump(metadata, file)
         file.write('---\n')
 
         # Calculate power law densities
-        rho_0 = u.Quantity(density['rho_0'])
-        v_0 = u.Quantity(density['v_0'])
         log_start = 3
-        velocities = (np.logspace(log_start, np.log10(stop-start+10**log_start), num=shells+1) + start - 10**log_start)*units
-        densities = rho_0 * (velocities / v_0)**(-n)
+        velocities = np.logspace(log_start, np.log10(v_outer-v_phot+10**log_start), num=shells+1) + v_phot - 10**log_start
+        densities = rho_0 * (velocities / v_phot)**(-n)
 
         # Write CSVY shell content
         fields = ['velocity', 'density'] + list(abundances.keys())
-        shells = [[velocities[i].value, densities[i].to(u.g / u.cm**3).value] + list(abundances.values()) for i in range(1 + shells)]
+        shells = [[velocities[i], densities[i]] + list(abundances.values()) for i in range(1 + shells)]
         writer = csv.writer(file)
         writer.writerow(fields)
         writer.writerows(shells)

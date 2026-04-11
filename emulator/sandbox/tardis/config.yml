@@ -21,11 +21,11 @@ plasma:
 
 montecarlo:
   seed: 23111963
-  no_of_packets: 4.0e+4
+  no_of_packets: 5.0e+4
   iterations: 50
 
   last_no_of_packets: 1.0e+5
-  no_of_virtual_packets: 3 # 10
+  no_of_virtual_packets: 0
   nthreads: 4
   enable_full_relativity: False
 
@@ -35,7 +35,7 @@ montecarlo:
     fraction: 0.95
     hold_iterations: 3
     damping_constant: 0.5
-    threshold: 0.025
+    threshold: 0.05
     t_inner:
       damping_constant: 0.5
 
