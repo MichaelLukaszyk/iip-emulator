@@ -39,7 +39,7 @@ def make_csvy(shells, t_exp, X, n=10, config_path=None, abundances=default_abund
         # Write CSVY metadata
         metadata = {
             'tardis_model_config_version': 'v1.0',
-            'model_density_time_0': '16.0 day',
+            'model_density_time_0': '10.0 day',
             'model_isotope_time_0': '100 s',
             'name': 'model.csvy',
 

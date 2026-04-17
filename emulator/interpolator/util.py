@@ -32,7 +32,7 @@ def calc_v_outer(v_phot, n):
 
 def calc_v_phot(t_exp, X, n):
     rho_0 = 1.948e-14 * u.g/u.cm**3
-    t_0 = 16.0 * u.day
+    t_0 = 10.0 * u.day
     v_0 = 8000.0 * u.km/u.s
     t_exp *= u.day
     tau = 2.0/3
