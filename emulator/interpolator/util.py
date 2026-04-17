@@ -7,6 +7,10 @@ import numpy as np
 import os
 from astropy.constants import L_sun, m_p, sigma_T, sigma_sb
 
+def remove_bad_indices(X, y, bad_indices):
+    mask = ~np.isin(np.arange(len(X)), bad_indices)
+    return X[mask], y[mask]
+
 def distance(scale):
     # Spectral flux in erg/s/ang/cm^2, model luminosity in erg/s/ang
     # F = (1/k)L, k = 4*pi*d^2
@@ -26,7 +30,19 @@ def to_lum(log_lsun):
 def calc_v_outer(v_phot, n):
     return v_phot*(0.01)**(-1/n)
 
-def calc_v_phot(t_exp, X, n, rho_0=1.948e-14):
+def calc_v_phot(t_exp, X, n):
+    rho_0 = 1.948e-14 * u.g/u.cm**3
+    t_0 = 16.0 * u.day
+    v_0 = 8000.0 * u.km/u.s
+    t_exp *= u.day
+    tau = 2.0/3
+    numer = sigma_T * t_exp * rho_0 * v_0 * X * (t_0 / t_exp)**3
+    denom = tau * m_p * (n-1)
+    v_phot = v_0 * (numer/denom).to(u.dimensionless_unscaled)**(1/(n-1))
+    return v_phot.to(u.km/u.s).value
+
+def calc_v_phot_simplified(t_exp, X, n, rho_0=1.948e-14):
+    # This assumes v_0 = v, and t_0 = t
     t_exp *= u.day
     rho_0 *= u.g/u.cm**3
     tau = 2.0/3

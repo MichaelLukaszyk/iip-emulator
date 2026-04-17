@@ -17,11 +17,13 @@ def set_threads(threads):
 
 def standard_csvy(params, config_path=None):
     # Use make_csvy for most cases, this is just in case you have missing parameters and want to have default values
+    v_start = None
     t_exp = 16
-    rho_0 = 1.948e-14
     abundances = None
     X = 0.7
     n = 10
+    if 'v_start' in params:
+        v_start = params['v_start']
     if 't_exp' in params:
         t_exp = params['t_exp']
     if 'n' in params:
@@ -30,17 +32,15 @@ def standard_csvy(params, config_path=None):
         X = params['X']
     if 'X' in params and 'Z' in params:
         abundances = make_abundances(params['X'], params['Z'])
-    if 'rho_0' in params:
-        rho_0 = params['rho_0']
 
     make_csvy(
         shells=40,
         t_exp=t_exp,
         X=X,
         n=n,
-        rho_0=rho_0,
         config_path=config_path,
-        abundances=abundances
+        abundances=abundances,
+        v_start=v_start
     )
 
 def build_config(params, config_path=None):
@@ -158,12 +158,15 @@ def log_sim(params, sim):
     id = params['id']
     params['converged'] = sim.converged
     params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
-    # v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'])
-    # v_phot, T_phot = get_phot(sim, v, tau_rosseland)
-    # params['rosseland_v_phot'] = v_phot
-    # params['rosseland_T_phot'] = T_phot
     params['T_inner'] = float(sim.plasma.t_rad[0])
 
+    # Find photosphere if not assuming that it's at the inner boundary
+    if 'v_start' in params:
+        v, tau_thomson, tau_expansion, tau_planck, tau_rosseland = get_tau(sim, params['t_exp'])
+        v_phot, T_phot = get_phot(sim, v, tau_rosseland)
+        params['rosseland_v_phot'] = v_phot
+        params['rosseland_T_phot'] = T_phot
+    
     # wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
     # L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
     # df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
