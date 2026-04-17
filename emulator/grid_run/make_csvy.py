@@ -30,13 +30,6 @@ def make_abundances(X, Z):
 default_abundances = make_abundances(0.7, 0.02)
 
 def make_csvy(shells, t_exp, X, n=10, config_path=None, abundances=default_abundances, v_start=None):
-    if v_start:
-        v_phot = v_start
-    else:
-        v_phot = util.calc_v_phot(t_exp=t_exp, X=X, n=n)
-    v_outer = 3 * v_phot
-    # v_outer = util.calc_v_outer(v_phot=v_phot, n=n)
-
     # CSVY model must be in same directory as configuration
     if config_path:
         csvy_path = os.path.join(os.path.dirname(config_path), 'model.csvy')
@@ -72,7 +65,13 @@ def make_csvy(shells, t_exp, X, n=10, config_path=None, abundances=default_abund
         file.write('---\n')
 
         # Calculate power law densities
-        rho_0 =1.948e-14
+        if v_start:
+            v_phot = v_start
+        else:
+            v_phot = util.calc_v_phot(t_exp=t_exp, X=X, n=n)
+        # v_outer = 3 * v_phot
+        v_outer = util.calc_v_outer(v_phot=v_phot, n=n)
+        rho_0 = 1.948e-14
         v_0 = 8000.0
         log_start = 3.0
         velocities = np.logspace(log_start, np.log10(v_outer-v_phot+10**log_start), num=shells+1) + v_phot - 10**log_start
