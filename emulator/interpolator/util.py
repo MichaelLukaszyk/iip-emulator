@@ -172,7 +172,6 @@ def label_common_features():
         "Ca II (8542)": 0.4,
         "Ca II (8662)": 0.1,
     }
-    i = 0
     ax = plt.gca()
     xmin, xmax = plt.xlim()
     for name, value in lines.items():
