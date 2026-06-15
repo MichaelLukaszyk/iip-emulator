@@ -1,4 +1,5 @@
 from emulator.interpolator import util
+from emulator import config
 import astropy.units as u
 import numpy as np
 import yaml
@@ -39,7 +40,7 @@ def make_csvy(shells, t_exp, X, n=10, config_path=None, abundances=default_abund
         # Write CSVY metadata
         metadata = {
             'tardis_model_config_version': 'v1.0',
-            'model_density_time_0': '10.0 day',
+            'model_density_time_0': str(config.t_0) + ' day',
             'model_isotope_time_0': '100 s',
             'name': 'model.csvy',
 
@@ -71,11 +72,8 @@ def make_csvy(shells, t_exp, X, n=10, config_path=None, abundances=default_abund
             v_phot = util.calc_v_phot(t_exp=t_exp, X=X, n=n)
         # v_outer = 3 * v_phot
         v_outer = util.calc_v_outer(v_phot=v_phot, n=n)
-        rho_0 = 1.948e-14
-        v_0 = 8000.0
-        log_start = 3.0
-        velocities = np.logspace(log_start, np.log10(v_outer-v_phot+10**log_start), num=shells+1) + v_phot - 10**log_start
-        densities = rho_0 * (velocities / v_0)**(-n)
+        velocities = np.logspace(config.log_start, np.log10(v_outer-v_phot+10**config.log_start), num=shells+1) + v_phot - 10**config.log_start
+        densities = config.rho_0 * (velocities / config.v_0)**(-n)
 
         # Write CSVY shell content
         fields = ['velocity', 'density'] + list(abundances.keys())

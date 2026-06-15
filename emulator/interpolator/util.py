@@ -1,11 +1,12 @@
+from astropy.constants import L_sun, m_p, sigma_T, sigma_sb
 from scipy.optimize import minimize_scalar
 from scipy.interpolate import interp1d
+from emulator import config
 import matplotlib.pyplot as plt
 import astropy.units as u
 import pandas as pd
 import numpy as np
 import os
-from astropy.constants import L_sun, m_p, sigma_T, sigma_sb
 
 def remove_bad_indices(X, y, bad_indices):
     mask = ~np.isin(np.arange(len(X)), bad_indices)
@@ -31,9 +32,9 @@ def calc_v_outer(v_phot, n):
     return v_phot*(0.01)**(-1/n)
 
 def calc_v_phot(t_exp, X, n):
-    rho_0 = 1.948e-14 * u.g/u.cm**3
-    t_0 = 10.0 * u.day
-    v_0 = 8000.0 * u.km/u.s
+    rho_0 = config.rho_0 * u.g/u.cm**3
+    t_0 = config.t_0 * u.day
+    v_0 = config.v_0 * u.km/u.s
     t_exp *= u.day
     tau = 2.0/3
     numer = sigma_T * t_exp * rho_0 * v_0 * X * (t_0 / t_exp)**3
@@ -41,19 +42,19 @@ def calc_v_phot(t_exp, X, n):
     v_phot = v_0 * (numer/denom).to(u.dimensionless_unscaled)**(1/(n-1))
     return v_phot.to(u.km/u.s).value
 
-def calc_v_phot_simplified(t_exp, X, n, rho_0=1.948e-14):
+def calc_v_phot_simplified(t_exp, X, n):
     # This assumes v_0 = v, and t_0 = t
+    rho_0 = config.rho_0 * u.g/u.cm**3
     t_exp *= u.day
-    rho_0 *= u.g/u.cm**3
     tau = 2.0/3
     v_phot = tau*m_p*(n-1)/(sigma_T*t_exp*rho_0*X)
     return v_phot.to(u.km/u.s).value
 
-def calc_model_mass(t_exp, v_phot, v_outer, n, rho_0=1.948e-14):
+def calc_model_mass(t_exp, v_phot, v_outer, n):
+    rho_0 = config.rho_0 * u.g/u.cm**3
     t_exp *= u.day
     v_phot *= u.km/u.s
     v_outer *= u.km/u.s
-    rho_0 *= u.g/u.cm**3
     M = 4*np.pi*rho_0 * t_exp**3 * v_phot**n / (n-3) * (v_phot**(3-n) - v_outer**(3-n))
     E = 2*np.pi*rho_0 * t_exp**3 * v_phot**n / (n-5) * (v_phot**(5-n) - v_outer**(5-n))
     return M.to(u.kg), E.to(u.erg)

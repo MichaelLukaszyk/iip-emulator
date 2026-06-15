@@ -2,7 +2,6 @@
 output/
 .vscode/
 saved_outputs/
-user_data/
 model.csvy
 ultranest/
 *.npz
