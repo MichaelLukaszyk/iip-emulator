@@ -18,21 +18,12 @@ def set_threads(threads):
 
 def standard_csvy(params, config_path=None):
     # Use make_csvy for most cases, this is just in case you have missing parameters and want to have default values
-    v_start = None
-    t_exp = 16
-    abundances = None
-    X = 0.7
-    n = 10
-    if 'v_start' in params:
-        v_start = params['v_start']
-    if 't_exp' in params:
-        t_exp = params['t_exp']
-    if 'n' in params:
-        n = params['n']
-    if 'X' in params:
-        X = params['X']
-    if 'X' in params and 'Z' in params:
-        abundances = make_abundances(params['X'], params['Z'])
+    v_start = params.get('v_start', None)
+    t_exp = params.get('t_exp', 16)
+    X = params.get('X', 0.7)
+    Z = params.get('Z', 0.05)
+    n = params.get('n', 10)
+    abundances = make_abundances(X, Z)
 
     make_csvy(
         shells=10,
@@ -159,7 +150,7 @@ def log_sim(params, sim):
     id = params['id']
     params['converged'] = sim.converged
     # params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
-    params['T_inner'] = float(sim.plasma.t_rad[0])
+    # params['T_inner'] = float(sim.plasma.t_rad[0])
 
     # Find photosphere if not assuming that it's at the inner boundary
     if 'v_start' in params:
