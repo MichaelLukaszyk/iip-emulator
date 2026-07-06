@@ -158,16 +158,14 @@ def log_sim(params, sim):
         v_phot, T_phot = get_phot(sim, v, tau_rosseland)
         params['rosseland_v_phot'] = v_phot
         params['rosseland_T_phot'] = T_phot
-    
-    # wavelength = sim.spectrum_solver.spectrum_virtual_packets.wavelength
-    # L_density = sim.spectrum_solver.spectrum_virtual_packets.luminosity_density_lambda
-    # df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    # write_df(df, str(id) + '_virtual_sed')
 
-    wavelength = sim.spectrum_solver.spectrum_integrated.wavelength
-    L_density = sim.spectrum_solver.spectrum_integrated.luminosity_density_lambda
-    df = pd.DataFrame({'wavelength': wavelength, 'L_density': L_density})
-    write_df(df, str(id) + '_integrated_sed')
+    spectrum = sim.spectrum_solver.spectrum_real_packets
+    df = pd.DataFrame({'wavelength': spectrum.wavelength, 'L_density': spectrum.luminosity_density_lambda})
+    write_df(df, str(id) + '_real_sed')
+
+    spectrum = sim.spectrum_solver.spectrum_virtual_packets
+    df = pd.DataFrame({'wavelength': spectrum.wavelength, 'L_density': spectrum.luminosity_density_lambda})
+    write_df(df, str(id) + '_virtual_sed')
 
     write_data(params)
 
