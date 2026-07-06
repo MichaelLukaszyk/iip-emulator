@@ -1,5 +1,4 @@
 tardis_config_version: v1.0
-# atom_data: "kurucz_atom_pure_simple.h5"
 atom_data: "kurucz_cd23_cmfgen_H_He.h5"
 csvy_model: "model.csvy"
 
@@ -8,7 +7,7 @@ supernova:
   time_explosion: 11.96 day
 
 plasma:
-  # initial_t_inner: 10000.0 K
+  initial_t_inner: 10000.0 K
   ionization: nebular
   excitation: dilute-lte
   radiative_rates_type: detailed
@@ -18,34 +17,32 @@ plasma:
       species: [H I, H II, He I, He II]
       coronal_approximation: True
       classical_nebular: False
-  # nlte_ionization_species: [H I, H II, He I, He II]
-  # nlte_solver: root
 
   link_t_rad_t_electron: 1.0
-  # continuum_interaction:
-  #   species:
-  #     - H I
-  #     - H II
-  #     - He I
-  #     - He II
-  #   enable_adiabatic_cooling: True
+  continuum_interaction:
+    species:
+      - H I
+      - H II
+      - He I
+      - He II
+    enable_adiabatic_cooling: True
 
 montecarlo:
   seed: 23111963
   no_of_packets: 1.0e+4
-  iterations: 50
+  iterations: 1
 
   last_no_of_packets: 1.0e+4
-  no_of_virtual_packets: 0
+  no_of_virtual_packets: 3
   nthreads: 4
 
   convergence_strategy:
     type: damped
     stop_if_converged: True
-    fraction: 0.95
+    fraction: 0.9 # 0.95
     hold_iterations: 3
     damping_constant: 0.5
-    threshold: 0.025
+    threshold: 0.1 # 0.05
     t_inner:
       damping_constant: 0.5
 

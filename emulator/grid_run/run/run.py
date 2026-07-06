@@ -1,4 +1,4 @@
-from emulator.grid_run.run_tardis import run_tardis
+from emulator.grid_run.run_tardis import run_tardis, set_threads
 from emulator.grid_run.output import get_folder_dir, set_output_dir, set_folder_name
 import astropy.units as u
 import pandas as pd
@@ -9,6 +9,7 @@ import os
 # Settings
 set_output_dir('/u/ml168/scratch')
 set_folder_name('grid_run')
+set_threads(16)
 
 # Copy grid
 current_dir = os.path.dirname(os.path.abspath(__file__))

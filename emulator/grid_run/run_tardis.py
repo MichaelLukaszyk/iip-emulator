@@ -1,4 +1,5 @@
 from tardis.io.configuration.config_reader import Configuration
+from tardis.workflows.type_iip_workflow import TypeIIPWorkflow
 from tardis.simulation import Simulation
 from emulator.grid_run.make_csvy import make_csvy, make_abundances
 from emulator.grid_run.output import write_data, write_df
@@ -34,7 +35,7 @@ def standard_csvy(params, config_path=None):
         abundances = make_abundances(params['X'], params['Z'])
 
     make_csvy(
-        shells=40,
+        shells=10,
         t_exp=t_exp,
         X=X,
         n=n,
@@ -182,13 +183,15 @@ def log_sim(params, sim):
 def run_tardis(params, config_path=None):
     standard_csvy(params, config_path=config_path)
     config = build_config(params, config_path=config_path)
-    sim = Simulation.from_config(
-        config,
-        virtual_packet_logging=False,
-        show_convergence_plots=False,
-        export_convergence_plots=False,
-        log_level='CRITICAL',
-    )
-    sim.run_convergence()
-    sim.run_final()
+    sim = TypeIIPWorkflow(config, csvy=True)
+    sim.run()
+    # sim = Simulation.from_config(
+    #     config,
+    #     virtual_packet_logging=False,
+    #     show_convergence_plots=False,
+    #     export_convergence_plots=False,
+    #     log_level='CRITICAL',
+    # )
+    # sim.run_convergence()
+    # sim.run_final()
     log_sim(params, sim)
