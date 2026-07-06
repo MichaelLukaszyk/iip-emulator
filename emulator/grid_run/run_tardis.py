@@ -158,7 +158,7 @@ def log_sim(params, sim):
     # Any modifications to params will be written to parameters.log by write_data
     id = params['id']
     params['converged'] = sim.converged
-    params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
+    # params['iterations'] = str(sim.iterations_executed) + '/' + str(sim.iterations)
     params['T_inner'] = float(sim.plasma.t_rad[0])
 
     # Find photosphere if not assuming that it's at the inner boundary
