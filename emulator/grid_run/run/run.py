@@ -9,7 +9,7 @@ import os
 # Settings
 set_output_dir('/u/ml168/scratch')
 set_folder_name('grid_run')
-set_threads(16)
+set_threads(1)
 
 # Copy grid
 current_dir = os.path.dirname(os.path.abspath(__file__))

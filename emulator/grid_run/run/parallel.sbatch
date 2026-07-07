@@ -4,14 +4,14 @@
 #SBATCH --error=/u/ml168/scratch/%A_%a.log
 #SBATCH --mail-user=ml168@illinois.edu
 #SBATCH --mail-type=FAIL
-#SBATCH --partition=caps-himem
+#SBATCH --partition=caps
 #SBATCH --account=caps
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=250G
-#SBATCH --time=24:00:00
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=50G
+#SBATCH --time=20:00:00
 
 START=$(( SLURM_ARRAY_TASK_ID * 10 ))
 END=$(( START + 9 ))

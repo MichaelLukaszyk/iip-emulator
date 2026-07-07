@@ -26,7 +26,7 @@ def standard_csvy(params, config_path=None):
     abundances = make_abundances(X, Z)
 
     make_csvy(
-        shells=10,
+        shells=2,
         t_exp=t_exp,
         X=X,
         n=n,
