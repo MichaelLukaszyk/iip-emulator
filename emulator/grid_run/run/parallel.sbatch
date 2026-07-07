@@ -9,8 +9,8 @@
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=50G
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=150G
 #SBATCH --time=20:00:00
 
 START=$(( SLURM_ARRAY_TASK_ID * 10 ))

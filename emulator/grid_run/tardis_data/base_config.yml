@@ -30,19 +30,19 @@ plasma:
 montecarlo:
   seed: 23111963
   no_of_packets: 1.0e+4
-  iterations: 3
+  iterations: 50
 
   last_no_of_packets: 1.0e+4
   no_of_virtual_packets: 3
-  nthreads: 1
+  nthreads: 16
 
   convergence_strategy:
     type: damped
     stop_if_converged: True
-    fraction: 0.9 # 0.95
+    fraction: 0.95
     hold_iterations: 3
     damping_constant: 0.5
-    threshold: 0.1 # 0.05
+    threshold: 0.05
     t_inner:
       damping_constant: 0.5
 
